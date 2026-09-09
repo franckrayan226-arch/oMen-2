@@ -38,11 +38,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Format non supporté. Utilisez JPEG, PNG, WebP ou GIF.'));
+    else cb(new Error('Format non supporté.'));
   },
 });
 
@@ -50,7 +50,6 @@ const upload = multer({
 // MIDDLEWARE
 // ============================================================
 
-// Webhooks ont besoin du raw body pour la vérification de signature
 app.use('/api/webhooks', express.raw({ type: 'application/json' }));
 
 app.use(helmet());
@@ -58,14 +57,13 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL_SHOES || 'http://localhost:3001',
     process.env.FRONTEND_URL_WELLNESS || 'http://localhost:3002',
-    process.env.FRONTEND_URL_DASHBOARD || 'http://localhost:3003',
+    process.env.FRONTEND_URL_DASHBOARD || 'http://localhost:3000',
   ],
   credentials: true,
 }));
 app.use(morgan('combined'));
 app.use(express.json());
 
-// Serve uploaded files statically
 app.use('/uploads', express.static(UPLOAD_DIR));
 
 // ============================================================
@@ -81,13 +79,9 @@ app.post('/api/upload', upload.array('files', 20), (req: any, res) => {
   res.json({ urls });
 });
 
-// URL import endpoint
 app.post('/api/upload', express.json(), async (req, res) => {
-  const { url, site } = req.body;
+  const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL requise' });
-
-  // For URL import, we just return the URL as-is (the frontend will handle downloading if needed)
-  // In production, you might want to download and re-host
   res.json({ urls: [url] });
 });
 
@@ -102,18 +96,18 @@ app.use('/api/products', productsRouter);
 app.use('/api/webhooks', webhooksRouter);
 app.use('/api/dashboard', dashboardRouter);
 
-// Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // ============================================================
-// START
+// START (local only — Vercel uses api/index.ts)
 // ============================================================
 
-app.listen(PORT, () => {
-  console.log(`[API] Server running on port ${PORT}`);
-  console.log(`[API] Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`[API] Server running on port ${PORT}`);
+  });
+}
 
 export default app;
