@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&amp;display=swap');
+      .name { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 500; }
+      .tagline { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 400; }
+    </style>
+  </defs>
+
+  <!-- paper -->
+  <rect width="1200" height="1200" fill="#eef3e7"/>
+
+  <!-- seal -->
+  <circle cx="600" cy="580" r="390" fill="#1e3a2a"/>
+
+  <!-- fine dial arc -->
+  <path d="M 332 513 A 285 285 0 0 1 868 513" fill="none" stroke="#dfeacf" stroke-opacity="0.85" stroke-width="9"/>
+
+  <!-- sprig -->
+  <g fill="#f4efe3">
+    <path d="M 588 700 C 581 622 581 532 588 428" fill="none" stroke="#f4efe3" stroke-width="17" stroke-linecap="round"/>
+    <path d="M 588 650 Q 676 638 728 562 Q 640 562 588 610 Z"/>
+    <path d="M 588 650 Q 500 638 448 562 Q 536 562 588 610 Z"/>
+    <path d="M 588 542 Q 668 530 714 466 Q 634 466 588 506 Z"/>
+    <path d="M 588 542 Q 508 530 462 466 Q 542 466 588 506 Z"/>
+    <path d="M 588 428 Q 622 366 588 310 Q 554 366 588 428 Z"/>
+  </g>
+
+  <!-- name -->
+  <text class="name" x="600" y="806" text-anchor="middle" font-size="96" letter-spacing="-2" fill="#f4efe3">Omen_Wellness</text>
+
+  <!-- rule -->
+  <line x1="440" y1="844" x2="760" y2="844" stroke="#dfeacf" stroke-width="4" stroke-opacity="0.9"/>
+
+  <!-- tagline -->
+  <text class="tagline" x="600" y="898" text-anchor="middle" font-size="40" fill="#dfeacf">Grow with nature</text>
+</svg>

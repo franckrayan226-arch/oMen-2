@@ -1,0 +1,55 @@
+
+> @omen2/shoes@1.0.0 dev
+> vite --port 3001
+
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m2767[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3001[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m13:53:29[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Home.tsx, /src/index.css[22m
+[2m13:53:46[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/Newsletter.tsx, /src/index.css[22m
+[2m13:53:58[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/BrandMarquee.tsx, /src/index.css[22m
+[2m13:54:12[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/StatsBar.tsx, /src/index.css[22m
+[2m13:54:12[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/Testimonials.tsx, /src/index.css[22m
+[2m14:03:38[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/LifestyleBento.tsx, /src/index.css[22m
+[2m14:04:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Product.tsx, /src/index.css[22m
+[2m14:21:23[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Home.tsx, /src/index.css[22m
+[2m14:21:52[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Home.tsx, /src/index.css[22m
+[2m14:32:20[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/LifestyleTiles.tsx, /src/index.css[22m
+[2m14:32:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Home.tsx, /src/index.css[22m
+[2m14:33:48[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m14:34:13[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/layout/Navbar.tsx, /src/index.css[22m
+[2m14:34:41[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/product/ProductCard.tsx, /src/index.css[22m
+[2m14:35:07[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/layout/MobileNav.tsx, /src/index.css[22m
+[2m14:35:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/Newsletter.tsx, /src/index.css[22m
+[2m14:36:06[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/ui/Reveal.tsx, /src/index.css[22m
+[2m14:36:28[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/ServiceStrip.tsx, /src/index.css[22m
+[2m14:37:03[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/layout/Footer.tsx, /src/index.css[22m
+[2m14:37:24[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/BrandMarquee.tsx, /src/index.css[22m
+[2m14:47:47[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/product/ProductCard.tsx, /src/index.css[22m
+[2m15:05:51[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/product/ProductCard.tsx, /src/index.css[22m
+[2m15:11:59[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/product/ProductCard.tsx, /src/index.css[22m
+[2m15:20:55[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/product/ProductCard.tsx, /src/index.css[22m
+[2m15:29:54[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Profil.tsx, /src/index.css[22m
+[2m15:30:22[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Checkout.tsx, /src/index.css[22m
+[2m15:31:06[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Profil.tsx, /src/index.css[22m
+[2m15:36:51[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Profil.tsx, /src/index.css[22m
+[2m15:42:44[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/product/ProductCard.tsx, /src/index.css[22m
+[2m15:42:44[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/ServiceStrip.tsx, /src/index.css[22m
+[2m15:42:57[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/layout/Footer.tsx, /src/index.css[22m
+[2m15:43:48[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m15:44:04[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Profil.tsx, /src/index.css[22m
+[2m15:44:52[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Checkout.tsx, /src/index.css[22m
+[2m17:38:20[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/HeroCarousel.tsx, /src/index.css[22m
+[2m17:38:20[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/HeroCarousel.tsx, /src/index.css[22m
+[2m20:40:07[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Catalogue.tsx, /src/index.css[22m
+[2m20:40:07[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Catalogue.tsx, /src/index.css[22m
+[2m20:41:20[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Catalogue.tsx, /src/index.css[22m
+[2m20:41:21[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Catalogue.tsx, /src/index.css[22m
+[2m20:41:43[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/FeaturedGrid.tsx, /src/index.css[22m
+[2m20:42:27[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/TrendingNow.tsx, /src/index.css[22m
+[2m20:42:27[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/home/TrendingNow.tsx, /src/index.css[22m
+[2m20:57:08[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Catalogue.tsx, /src/index.css, /src/components/home/FeaturedGrid.tsx, /src/components/home/TrendingNow.tsx[22m
+[2m20:57:08[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Catalogue.tsx, /src/index.css, /src/components/home/FeaturedGrid.tsx, /src/components/home/TrendingNow.tsx[22m
+[2m20:57:17[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/Catalogue.tsx, /src/index.css, /src/components/home/FeaturedGrid.tsx, /src/components/home/TrendingNow.tsx[22m

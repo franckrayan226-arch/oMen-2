@@ -1,0 +1,18 @@
+{
+  "name": "omen2",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "db:generate": "cd packages/api && npx prisma generate",
+    "db:push": "cd packages/api && npx prisma db push",
+    "db:seed": "cd packages/api && npx tsx prisma/seed.ts",
+    "db:studio": "cd packages/api && npx prisma studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.0"
+  },
+  "packageManager": "npm@10.0.0"
+}
