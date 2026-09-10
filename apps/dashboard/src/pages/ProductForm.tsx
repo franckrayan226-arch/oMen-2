@@ -219,7 +219,11 @@ export default function ProductForm() {
       const result = await api.uploadFiles(Array.from(files));
       const urls: string[] = result.urls || [];
       urls.forEach((url) => {
-        addImageUrl(colorIdx, `${import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app"}${url}`);
+        if (url.startsWith("http")) {
+          addImageUrl(colorIdx, url);
+        } else {
+          addImageUrl(colorIdx, `${(import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "")}${url}`);
+        }
       });
     } catch {
       setError("Erreur lors de l'upload");

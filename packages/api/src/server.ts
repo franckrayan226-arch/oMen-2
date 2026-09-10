@@ -30,8 +30,13 @@ if (!isVercel) {
   } catch {}
 }
 
-const storage = isVercel ? multer.memoryStorage() : multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    try {
+      if (isVercel && !fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+    } catch {}
+    cb(null, UPLOAD_DIR);
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname);
     const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
@@ -89,12 +94,7 @@ app.post('/api/upload', upload.array('files', 20), (req: any, res) => {
 
   const host = req.headers.host || `localhost:${PORT}`;
   const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-  const urls = files.map(f => {
-    if (isVercel) {
-      return `${protocol}://${host}/uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}${path.extname(f.originalname)}`;
-    }
-    return `${protocol}://${host}/uploads/${f.filename}`;
-  });
+  const urls = files.map(f => `${protocol}://${host}/uploads/${f.filename}`);
   res.json({ urls });
 });
 

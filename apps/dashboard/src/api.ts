@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app";
+const API = (import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "");
 
 let token: string | null = localStorage.getItem("omen_admin_token");
 const listeners = new Set<(t: string | null) => void>();

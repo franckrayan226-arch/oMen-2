@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API = import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app";
+const API = (import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "");
 const STORE_ID = "omen-wellness";
 
 function resolveImage(url: string | undefined): string {
