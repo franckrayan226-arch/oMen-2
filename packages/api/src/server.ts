@@ -41,11 +41,11 @@ let upload: multer.Multer;
 if (useCloudinary) {
   const storage = new CloudinaryStorage({
     cloudinary,
-    params: {
+    params: async (_req, file) => ({
       folder: 'omen/products',
       allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
-      transformation: [{ width: 1200, height: 1200, crop: 'limit' }],
-    } as any,
+      public_id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    }),
   });
   upload = multer({
     storage,
@@ -106,6 +106,13 @@ app.post('/api/upload', upload.array('files', 20), (req: any, res) => {
   });
 
   res.json({ urls });
+});
+
+app.use((err: any, _req: any, res: any, _next: any) => {
+  if (err) {
+    console.error('Upload error:', err.message || err);
+    return res.status(500).json({ error: err.message || 'Upload failed' });
+  }
 });
 
 app.post('/api/upload', express.json(), async (req, res) => {
