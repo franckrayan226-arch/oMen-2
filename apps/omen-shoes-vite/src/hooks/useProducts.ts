@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API = import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app";
 const STORE_ID = "omen-shoes";
 
 function resolveImage(url: string | undefined): string {

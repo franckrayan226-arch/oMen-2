@@ -1,4 +1,4 @@
-const API = "http://localhost:4000";
+const API = import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app";
 
 let token: string | null = localStorage.getItem("omen_admin_token");
 const listeners = new Set<(t: string | null) => void>();
