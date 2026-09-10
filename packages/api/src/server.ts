@@ -4,6 +4,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import path from 'path';
 import fs from 'fs';
 
@@ -16,43 +18,59 @@ import dashboardRouter from './routes/dashboard.routes';
 
 try { dotenv.config(); } catch {}
 
+// Cloudinary config
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 // ============================================================
-// UPLOAD CONFIG (multer)
+// UPLOAD CONFIG
 // ============================================================
 const isVercel = !!process.env.VERCEL;
-const UPLOAD_DIR = isVercel ? '/tmp' : path.resolve(process.cwd(), 'public', 'uploads');
-if (!isVercel) {
-  try {
-    if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-  } catch {}
-}
+const useCloudinary = !!process.env.CLOUDINARY_CLOUD_NAME;
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
+let upload: multer.Multer;
+
+if (useCloudinary) {
+  const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: 'omen/products',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+      transformation: [{ width: 1200, height: 1200, crop: 'limit' }],
+    } as any,
+  });
+  upload = multer({
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+  });
+} else {
+  const UPLOAD_DIR = isVercel ? '/tmp' : path.resolve(process.cwd(), 'public', 'uploads');
+  if (!isVercel) {
     try {
-      if (isVercel && !fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+      if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
     } catch {}
-    cb(null, UPLOAD_DIR);
-  },
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
-    cb(null, name);
-  },
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Format non supporté.'));
-  },
-});
+  }
+  const storage = multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
+      cb(null, name);
+    },
+  });
+  upload = multer({
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+  });
+}
 
 // ============================================================
 // MIDDLEWARE
@@ -63,38 +81,30 @@ app.use('/api/webhooks', express.raw({ type: 'application/json' }));
 app.use(helmet());
 app.use(cors({
   origin: (origin, callback) => {
-    const allowed = [
-      process.env.FRONTEND_URL_SHOES,
-      process.env.FRONTEND_URL_WELLNESS,
-      process.env.FRONTEND_URL_DASHBOARD,
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://localhost:3000',
-    ].filter(Boolean);
-
-    if (!origin || allowed.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true);
-    }
+    if (!origin) return callback(null, true);
+    callback(null, true);
   },
   credentials: true,
 }));
 app.use(morgan('combined'));
 app.use(express.json());
 
-app.use('/uploads', express.static(UPLOAD_DIR));
-
 // ============================================================
 // UPLOAD ROUTES
 // ============================================================
 app.post('/api/upload', upload.array('files', 20), (req: any, res) => {
-  const files = req.files as Express.Multer.File[];
+  const files = req.files as any[];
   if (!files?.length) return res.status(400).json({ error: 'Aucun fichier' });
 
-  const host = req.headers.host || `localhost:${PORT}`;
-  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-  const urls = files.map(f => `${protocol}://${host}/uploads/${f.filename}`);
+  const urls = files.map(f => {
+    if (useCloudinary) {
+      return f.path;
+    }
+    const host = req.headers.host || `localhost:${PORT}`;
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+    return `${protocol}://${host}/uploads/${f.filename}`;
+  });
+
   res.json({ urls });
 });
 
@@ -116,7 +126,7 @@ app.use('/api/webhooks', webhooksRouter);
 app.use('/api/dashboard', dashboardRouter);
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', cloudinary: useCloudinary, timestamp: new Date().toISOString() });
 });
 
 // ============================================================
@@ -125,7 +135,7 @@ app.get('/api/health', (_req, res) => {
 
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {
-    console.log(`[API] Server running on port ${PORT}`);
+    console.log(`[API] Server running on port ${PORT} | Cloudinary: ${useCloudinary}`);
   });
 }
 
