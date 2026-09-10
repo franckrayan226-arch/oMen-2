@@ -54,11 +54,22 @@ app.use('/api/webhooks', express.raw({ type: 'application/json' }));
 
 app.use(helmet());
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL_SHOES || 'http://localhost:3001',
-    process.env.FRONTEND_URL_WELLNESS || 'http://localhost:3002',
-    process.env.FRONTEND_URL_DASHBOARD || 'http://localhost:3000',
-  ],
+  origin: (origin, callback) => {
+    const allowed = [
+      process.env.FRONTEND_URL_SHOES,
+      process.env.FRONTEND_URL_WELLNESS,
+      process.env.FRONTEND_URL_DASHBOARD,
+      'http://localhost:3001',
+      'http://localhost:3002',
+      'http://localhost:3000',
+    ].filter(Boolean);
+
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
   credentials: true,
 }));
 app.use(morgan('combined'));
