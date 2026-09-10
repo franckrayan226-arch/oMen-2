@@ -10,13 +10,15 @@ const FALLBACK = [
 ];
 
 export function TrendingNow() {
-  const { products: apiProducts } = useProducts();
+  const { products: apiProducts, loading } = useProducts();
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 34, seconds: 56 });
 
   // Filter promo products from API, fallback to static
-  const products = apiProducts.length > 0
-    ? apiProducts.filter(p => p.compareAt).slice(0, 4).map(p => ({ ...p, colors: p.colorsCount }))
-    : FALLBACK;
+  const products = loading
+    ? []
+    : apiProducts.length > 0
+      ? apiProducts.filter(p => p.compareAt).slice(0, 4).map(p => ({ ...p, colors: p.colorsCount, compareAt: p.compareAt ?? undefined, badge: (p.badge as any) || undefined }))
+      : FALLBACK;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -68,7 +70,15 @@ export function TrendingNow() {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-3 lg:grid-cols-4">
-        {products.map((product, i) => (
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="aspect-square rounded-xl bg-gray-200" />
+              <div className="mt-2 h-3 w-3/4 rounded bg-gray-200" />
+              <div className="mt-1 h-2 w-1/2 rounded bg-gray-200" />
+            </div>
+          ))
+        ) : products.map((product, i) => (
           <div key={product.id} className="animate-fade-in" style={{ animationDelay: `${i * 50}ms` }}>
             <ProductCard {...product} />
           </div>

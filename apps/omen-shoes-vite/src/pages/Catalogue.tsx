@@ -14,19 +14,19 @@ const SORT_OPTIONS = [
 ];
 
 // Fallback static products if API returns nothing
-const FALLBACK_PRODUCTS = [
+const FALLBACK_PRODUCTS: Array<{ id: string; slug: string; name: string; brand: string; price: number; compareAt?: number; colorsCount: number; badge?: "Nouveau" | "Promo" | "Top"; image: string }> = [
   { id: "1", slug: "nike-air-max-90", name: "Nike Air Max 90", brand: "Nike", price: 45000, compareAt: 55000, colorsCount: 3, badge: "Nouveau", image: "/shoes/nike-air-max-90.jpg" },
   { id: "2", slug: "jordan-1-retro-high", name: "Jordan 1 Retro High OG", brand: "Jordan", price: 75000, colorsCount: 2, badge: "Top", image: "/shoes/jordan-1.jpg" },
-  { id: "3", slug: "new-balance-550", name: "New Balance 550", brand: "New Balance", price: 38000, colorsCount: 4, badge: null, image: "/shoes/new-balance-550.jpg" },
+  { id: "3", slug: "new-balance-550", name: "New Balance 550", brand: "New Balance", price: 38000, colorsCount: 4, image: "/shoes/new-balance-550.jpg" },
   { id: "4", slug: "adidas-samba-og", name: "adidas Samba OG", brand: "adidas", price: 42000, colorsCount: 2, badge: "Nouveau", image: "/shoes/adidas-samba-og.jpg" },
-  { id: "5", slug: "nike-dunk-low", name: "Nike Dunk Low Retro", brand: "Nike", price: 48000, colorsCount: 5, badge: null, image: "/shoes/nike-dunk-low.jpg" },
+  { id: "5", slug: "nike-dunk-low", name: "Nike Dunk Low Retro", brand: "Nike", price: 48000, colorsCount: 5, image: "/shoes/nike-dunk-low.jpg" },
   { id: "6", slug: "jordan-4-retro", name: "Jordan 4 Retro", brand: "Jordan", price: 85000, compareAt: 95000, colorsCount: 2, badge: "Promo", image: "/shoes/jordan-4-retro.jpg" },
-  { id: "7", slug: "puma-suede-classic", name: "Puma Suede Classic", brand: "Puma", price: 32000, colorsCount: 3, badge: null, image: "/shoes/puma-suede-classic.jpg" },
+  { id: "7", slug: "puma-suede-classic", name: "Puma Suede Classic", brand: "Puma", price: 32000, colorsCount: 3, image: "/shoes/puma-suede-classic.jpg" },
   { id: "8", slug: "lv-trainer", name: "Louis Vuitton LV Trainer", brand: "Louis Vuitton", price: 120000, colorsCount: 2, badge: "Top", image: "/shoes/lv-trainer.jpg" },
-  { id: "9", slug: "nike-air-force-1", name: "Nike Air Force 1 '07", brand: "Nike", price: 40000, colorsCount: 4, badge: null, image: "/shoes/nike-air-force-1-og.jpg" },
-  { id: "10", slug: "adidas-stan-smith", name: "adidas Stan Smith", brand: "adidas", price: 35000, colorsCount: 3, badge: null, image: "/shoes/adidas-stan.jpg" },
+  { id: "9", slug: "nike-air-force-1", name: "Nike Air Force 1 '07", brand: "Nike", price: 40000, colorsCount: 4, image: "/shoes/nike-air-force-1-og.jpg" },
+  { id: "10", slug: "adidas-stan-smith", name: "adidas Stan Smith", brand: "adidas", price: 35000, colorsCount: 3, image: "/shoes/adidas-stan.jpg" },
   { id: "11", slug: "new-balance-2002r", name: "New Balance 2002R", brand: "New Balance", price: 52000, colorsCount: 2, badge: "Nouveau", image: "/shoes/nb-2002r.jpg" },
-  { id: "12", slug: "vans-old-skool", name: "Vans Old Skool", brand: "Vans", price: 25000, colorsCount: 3, badge: null, image: "/shoes/vans.jpg" },
+  { id: "12", slug: "vans-old-skool", name: "Vans Old Skool", brand: "Vans", price: 25000, colorsCount: 3, image: "/shoes/vans.jpg" },
 ];
 
 export default function Catalogue() {
@@ -38,7 +38,8 @@ export default function Catalogue() {
   const [search, setSearch] = useState("");
   const { products: apiProducts, loading } = useProducts();
 
-  const ALL_PRODUCTS = apiProducts.length > 0 ? apiProducts.map(p => ({ ...p, colors: p.colorsCount })) : FALLBACK_PRODUCTS;
+  const ALL_PRODUCTS = loading ? []     : apiProducts.length > 0
+      ? apiProducts.map(p => ({ ...p, colors: p.colorsCount, compareAt: p.compareAt ?? undefined, badge: (p.badge as any) || undefined })) : FALLBACK_PRODUCTS;
 
   let filtered = ALL_PRODUCTS.filter((p) => {
     if (brand && p.brand !== brand) return false;

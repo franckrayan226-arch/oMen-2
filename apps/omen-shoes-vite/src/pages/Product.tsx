@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Button from '@/components/ui/Button';
 import { Navbar } from "@/components/layout/Navbar";
@@ -7,28 +7,27 @@ import { Footer } from "@/components/layout/Footer";
 import { StickyCart } from "@/components/product/StickyCart";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useProduct } from "@/hooks/useProducts";
 
 import { Reveal } from '@/components/ui/Reveal';
 
 const SIZES = ["38", "39", "40", "41", "42", "43", "44"];
 
-const PRODUCTS: Record<string, { id: string; name: string; brand: string; price: number; description: string; colors: { name: string; hex: string }[]; images: string[] }> = {
+const FALLBACK_PRODUCTS: Record<string, { id: string; name: string; brand: string; price: number; description: string; colors: { name: string; hex: string }[]; images: string[] }> = {
   "nike-air-max-90": { id: "1", name: "Nike Air Max 90", brand: "Nike", price: 45000, description: "L'Air Max 90 revisité avec une bonde Air emblématique pour un confort tout-day.", colors: [{ name: "Noir/Blanc", hex: "#111" }, { name: "Blanc/Gris", hex: "#e5e5e5" }, { name: "Triple Noir", hex: "#1a1a1a" }], images: ["/shoes/nike-air-max-90.jpg", "/shoes/nike-air-force-1-og.jpg", "/shoes/nike-dunk-low.jpg"] },
   "jordan-1-retro-high": { id: "2", name: "Jordan 1 Retro High OG", brand: "Jordan", price: 75000, description: "L'original qui a tout lancé. Cuir premium et silhouète iconique.", colors: [{ name: "Bred", hex: "#111" }, { name: "Chicago", hex: "#c41e3a" }], images: ["/shoes/jordan-1.jpg", "/shoes/jordan-4-retro.jpg"] },
-  "new-balance-550": { id: "3", name: "New Balance 550", brand: "New Balance", price: 38000, description: "Le classique revisité. Confort et style retro.", colors: [{ name: "Blanc", hex: "#f5f5f5" }, { name: "Gris", hex: "#999" }], images: ["/shoes/new-balance-550.jpg", "/shoes/nb-2002r.jpg"] },
-  "adidas-samba-og": { id: "4", name: "adidas Samba OG", brand: "adidas", price: 42000, description: "Le Samba, iconique depuis les terrains de foot.", colors: [{ name: "Noir", hex: "#111" }, { name: "Blanc", hex: "#f5f5f5" }], images: ["/shoes/adidas-samba-og.jpg", "/shoes/adidas-stan.jpg"] },
-  "nike-dunk-low": { id: "5", name: "Nike Dunk Low Retro", brand: "Nike", price: 48000, description: "Le Dunk, né sur les courts, devenu icône de la rue.", colors: [{ name: "Panda", hex: "#111" }, { name: "University", hex: "#c41e3a" }], images: ["/shoes/nike-dunk-low.jpg", "/shoes/nike-air-max-90.jpg"] },
-  "jordan-4-retro": { id: "6", name: "Jordan 4 Retro", brand: "Jordan", price: 85000, description: "La Jordan 4, aérodynamique et audacieuse.", colors: [{ name: "Bred", hex: "#111" }, { name: "White Cement", hex: "#e5e5e5" }], images: ["/shoes/jordan-4-retro.jpg", "/shoes/jordan-1.jpg"] },
-  "puma-suede-classic": { id: "7", name: "Puma Suede Classic", brand: "Puma", price: 32000, description: "Le Suede, icône du streetwear depuis 1968.", colors: [{ name: "Noir", hex: "#111" }, { name: "Bleu", hex: "#1e40af" }], images: ["/shoes/puma-suede-classic.jpg"] },
-  "lv-trainer": { id: "8", name: "Louis Vuitton LV Trainer", brand: "Louis Vuitton", price: 120000, description: "Le LV Trainer, luxe et streetwear réunis. Calf leather et Monogram.", colors: [{ name: "Blanc", hex: "#f5f5f5" }, { name: "Noir", hex: "#111" }], images: ["/shoes/lv-trainer.jpg"] },
-  "nike-air-force-1": { id: "9", name: "Nike Air Force 1 '07", brand: "Nike", price: 40000, description: "L'Air Force 1, pionnier de la sneaker culture.", colors: [{ name: "Blanc", hex: "#f5f5f5" }, { name: "Noir", hex: "#111" }], images: ["/shoes/nike-air-force-1-og.jpg", "/shoes/nike-air-max-90.jpg"] },
-  "adidas-stan-smith": { id: "10", name: "adidas Stan Smith", brand: "adidas", price: 35000, description: "Le Stan Smith, élégance tennis depuis 1971.", colors: [{ name: "Blanc", hex: "#f5f5f5" }, { name: "Noir", hex: "#111" }], images: ["/shoes/adidas-stan.jpg", "/shoes/adidas-samba-og.jpg"] },
-  "new-balance-2002r": { id: "11", name: "New Balance 2002R", brand: "New Balance", price: 52000, description: "Le 2002R, confort running et style moderne.", colors: [{ name: "Gris", hex: "#888" }, { name: "Noir", hex: "#111" }], images: ["/shoes/nb-2002r.jpg", "/shoes/new-balance-550.jpg"] },
-  "vans-old-skool": { id: "12", name: "Vans Old Skool", brand: "Vans", price: 25000, description: "L'Old Skool, le skate shoe par excellence.", colors: [{ name: "Noir", hex: "#111" }, { name: "Blanc", hex: "#f5f5f5" }], images: ["/shoes/vans.jpg", "/shoes/puma-suede-classic.jpg"] },
 };
+
+function resolveImage(url: string | undefined): string {
+  if (!url) return "";
+  const API = (import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "");
+  if (url.startsWith("http")) return url;
+  return `${API}${url}`;
+}
 
 export default function Product() {
   const { slug } = useParams();
+  const { product: apiProduct, loading } = useProduct(slug || "");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -38,8 +37,32 @@ export default function Product() {
   const { items: favItems, addItem: addFav, removeItem: removeFav } = useFavorites();
   const navigate = useNavigate();
 
-  const product = PRODUCTS[slug || ""] || PRODUCTS["nike-air-max-90"];
+  const fallback = FALLBACK_PRODUCTS[slug || ""] || FALLBACK_PRODUCTS["nike-air-max-90"];
+  const product = apiProduct ? {
+    id: apiProduct.id,
+    name: apiProduct.name,
+    brand: apiProduct.brand || apiProduct.category || "",
+    price: apiProduct.price,
+    description: apiProduct.description || "",
+    colors: apiProduct.colors?.map((c: any) => ({ name: c.name, hex: c.hex })) || fallback.colors,
+    images: [
+      ...((apiProduct.images || []).map((img: any) => resolveImage(img.url))),
+      ...((apiProduct.colors || []).flatMap((c: any) => (c.images || []).map((img: any) => resolveImage(img.url)))),
+    ].filter(Boolean).length > 0
+      ? [
+          ...((apiProduct.images || []).map((img: any) => resolveImage(img.url))),
+          ...((apiProduct.colors || []).flatMap((c: any) => (c.images || []).map((img: any) => resolveImage(img.url)))),
+        ].filter(Boolean)
+      : fallback.images,
+  } : (loading ? { ...fallback, images: [] } : fallback);
+
   const isFav = favItems.some((i) => i.productId === product.id);
+
+  useEffect(() => {
+    setSelectedColor(0);
+    setSelectedImage(0);
+    setSelectedSize(null);
+  }, [slug]);
 
   const handleAdd = () => {
     if (!selectedSize) { setShowSizes(true); return; }
@@ -104,7 +127,7 @@ export default function Product() {
               <div className="mt-5">
                 <p className="mb-2 text-[12px] font-semibold text-[#111]">Couleur — <span className="font-normal text-[#666]">{product.colors[selectedColor]?.name}</span></p>
                 <div className="flex gap-2">
-                  {product.colors.map((c, i) => (
+                  {product.colors.map((c: { name: string; hex: string }, i: number) => (
                     <button key={c.name} onClick={() => setSelectedColor(i)} className={`h-9 w-9 rounded-full border-2 transition-all ${i === selectedColor ? "border-[#1d4ed8] scale-110" : "border-[#e0d6d0]"}`} style={{ background: c.hex }} aria-label={c.name} />
                   ))}
                 </div>

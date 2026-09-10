@@ -14,10 +14,12 @@ const FALLBACK = [
 ];
 
 export function FeaturedGrid() {
-  const { products: apiProducts } = useProducts();
-  const products = apiProducts.length > 0
-    ? apiProducts.slice(0, 8).map(p => ({ ...p, colors: p.colorsCount }))
-    : FALLBACK;
+  const { products: apiProducts, loading } = useProducts();
+  const products = loading
+    ? []
+    : apiProducts.length > 0
+      ? apiProducts.slice(0, 8).map(p => ({ ...p, colors: p.colorsCount, compareAt: p.compareAt ?? undefined, badge: (p.badge as any) || undefined }))
+      : FALLBACK;
 
   return (
     <section className="mx-auto mt-8 max-w-7xl px-3 sm:px-6 sm:mt-12">
@@ -30,7 +32,15 @@ export function FeaturedGrid() {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-3 lg:grid-cols-4">
-        {products.map((product, i) => (
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="aspect-square rounded-xl bg-gray-200" />
+              <div className="mt-2 h-3 w-3/4 rounded bg-gray-200" />
+              <div className="mt-1 h-2 w-1/2 rounded bg-gray-200" />
+            </div>
+          ))
+        ) : products.map((product, i) => (
           <div key={product.id} className="animate-fade-in" style={{ animationDelay: `${i * 50}ms` }}>
             <ProductCard {...product} />
           </div>

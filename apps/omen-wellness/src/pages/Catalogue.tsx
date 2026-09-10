@@ -21,17 +21,21 @@ export default function Catalogue() {
   const [search, setSearch] = useState("");
   const { products: apiProducts, loading } = useProducts();
 
-  // Merge API products with static fallback
-  const allProducts = apiProducts.length > 0
-    ? [...apiProducts.map(p => ({
-        ...p,
-        brand: p.brand || "Omen Lab",
-        description: "",
-        ritual: [] as string[],
-        actives: "",
-        variants: [] as any[],
-      })), ...PRODUCTS.filter(sp => !apiProducts.some(ap => ap.slug === sp.slug))]
-    : PRODUCTS;
+  // Merge API products with static fallback - only when not loading
+  const allProducts = loading
+    ? []
+    : apiProducts.length > 0
+      ? [...apiProducts.map(p => ({
+          ...p,
+          brand: p.brand || "Omen Lab",
+          description: "",
+          ritual: [] as string[],
+          actives: "",
+          compareAt: p.compareAt ?? undefined,
+          badge: (p.badge as any) || undefined,
+          variants: [] as any[],
+        })), ...PRODUCTS.filter(sp => !apiProducts.some(ap => ap.slug === sp.slug))]
+      : PRODUCTS;
 
   let filtered = allProducts.filter((p) => {
     if (category && p.category !== category) return false;

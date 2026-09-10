@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { MobileNav } from "@/components/layout/MobileNav";
@@ -7,12 +7,19 @@ import { StickyCart } from "@/components/product/StickyCart";
 import { Reveal } from "@/components/ui/Reveal";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useProduct } from "@/hooks/useProducts";
 import { getProduct } from "@/data/products";
 
-const FALLBACK_SLUG = "minoxidil-5";
+function resolveImage(url: string | undefined): string {
+  if (!url) return "";
+  const API = (import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "");
+  if (url.startsWith("http")) return url;
+  return `${API}${url}`;
+}
 
 export default function Product() {
   const { slug } = useParams();
+  const { product: apiProduct, loading } = useProduct(slug || "");
   const [selectedVariant, setSelectedVariant] = useState<number | null>(null);
   const [added, setAdded] = useState(false);
   const [showVariants, setShowVariants] = useState(false);
@@ -20,8 +27,30 @@ export default function Product() {
   const { items: favItems, addItem: addFav, removeItem: removeFav } = useFavorites();
   const navigate = useNavigate();
 
-  const product = getProduct(slug || "") || getProduct(FALLBACK_SLUG)!;
+  const staticProduct = getProduct(slug || "") || getProduct("minoxidil-5");
+  const product = apiProduct ? {
+    id: apiProduct.id,
+    slug: apiProduct.slug,
+    name: apiProduct.name,
+    brand: apiProduct.brand || "Omen Lab",
+    category: apiProduct.category || "",
+    price: apiProduct.price,
+    compareAt: apiProduct.compareAt,
+    badge: apiProduct.badge || null,
+    image: resolveImage(apiProduct.images?.[0]?.url) || resolveImage(apiProduct.colors?.[0]?.images?.[0]?.url) || staticProduct!.image,
+    description: apiProduct.description || staticProduct!.description,
+    ritual: staticProduct!.ritual,
+    actives: staticProduct!.actives,
+    variants: apiProduct.variants?.length
+      ? apiProduct.variants.map((v: any) => ({ label: v.size, price: v.price || apiProduct.price, compareAt: v.compareAt }))
+      : staticProduct!.variants,
+  } : (loading ? { ...staticProduct!, image: "", variants: [] } : staticProduct!);
+
   const isFav = favItems.some((i) => i.productId === product.id);
+
+  useEffect(() => {
+    setSelectedVariant(null);
+  }, [slug]);
 
   const handleAdd = () => {
     if (selectedVariant === null) {
@@ -95,7 +124,7 @@ export default function Product() {
                 <div className="mt-5">
                   <p className="label-mono mb-2.5 text-[9px] text-[#17211a]">Format {selectedVariant !== null && <span className="font-normal text-[#17211a]/55">— {product.variants[selectedVariant].label}</span>}</p>
                   <div className="flex flex-wrap gap-2">
-                    {product.variants.map((v, i) => (
+                    {product.variants.map((v: { label: string; price: number; compareAt?: number }, i: number) => (
                       <button key={v.label} onClick={() => { setSelectedVariant(i); setShowVariants(false); }} className={`min-w-[130px] rounded-2xl px-4 py-3 text-left transition-all active:scale-[0.98] ${selectedVariant === i ? "btn-ink" : "btn-glass"}`}>
                         <span className="block text-[11px] font-semibold uppercase tracking-[0.1em]">{v.label}</span>
                         <span className={`mt-0.5 block text-[10px] ${selectedVariant === i ? "text-[#f4efe3]/70" : "text-[#17211a]/55"}`}>{v.price.toLocaleString("fr-FR")} FCFA</span>
