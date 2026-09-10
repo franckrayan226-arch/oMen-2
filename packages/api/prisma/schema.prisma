@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================================
@@ -136,7 +137,7 @@ model Order {
   store           Store    @relation(fields: [storeId], references: [id])
   customerId      String?
   customer        Customer? @relation(fields: [customerId], references: [id])
-  reference       String   @unique // Référence GeniusPay (MTX-...)
+  reference       String?  @unique // Référence GeniusPay (MTX-...)
   status          String   @default("PENDING") // PENDING | PROCESSING | SHIPPED | DELIVERED | CANCELLED | REFUNDED
   subtotal        Int
   shipping        Int      @default(0)

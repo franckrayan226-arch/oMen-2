@@ -49,7 +49,7 @@ router.post('/create', async (req: Request, res: Response) => {
     // 3. Créer la commande (statut PENDING)
     const order = await prisma.order.create({
       data: {
-        storeId,
+        store: { connect: { id: storeId } },
         subtotal,
         shipping,
         total,
