@@ -18,7 +18,7 @@ export default function Checkout() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:4000"}/api/payments/create`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app"}/api/payments/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
