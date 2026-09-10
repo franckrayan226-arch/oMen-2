@@ -53,15 +53,15 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
-// GET /api/products/:slug — Public product detail
-router.get('/:slug', async (req: Request, res: Response) => {
+// GET /api/products/admin/:id — Admin product detail (includes inactive)
+router.get('/admin/:id', async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.findUnique({
-      where: { slug: req.params.slug, active: true },
+      where: { id: req.params.id },
       include: {
-        colors: { include: { images: true } },
-        images: true,
-        variants: { where: { active: true } },
+        colors: { include: { images: true }, orderBy: { sortOrder: 'asc' } },
+        images: { orderBy: { sortOrder: 'asc' } },
+        variants: { orderBy: [{ colorId: 'asc' }, { size: 'asc' }] },
       },
     });
 
@@ -72,15 +72,15 @@ router.get('/:slug', async (req: Request, res: Response) => {
   }
 });
 
-// GET /api/products/admin/:id — Admin product detail (includes inactive)
-router.get('/admin/:id', async (req: Request, res: Response) => {
+// GET /api/products/:slug — Public product detail
+router.get('/:slug', async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.findUnique({
-      where: { id: req.params.id },
+      where: { slug: req.params.slug, active: true },
       include: {
-        colors: { include: { images: true }, orderBy: { sortOrder: 'asc' } },
-        images: { orderBy: { sortOrder: 'asc' } },
-        variants: { orderBy: [{ colorId: 'asc' }, { size: 'asc' }] },
+        colors: { include: { images: true } },
+        images: true,
+        variants: { where: { active: true } },
       },
     });
 
