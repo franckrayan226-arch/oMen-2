@@ -79,8 +79,8 @@ router.post('/create', async (req: Request, res: Response) => {
         store_id: storeId,
         store_name: store.name,
       },
-      successUrl: `${process.env.FRONTEND_URL}/${store.name}/order-success?ref={reference}`,
-      errorUrl: `${process.env.FRONTEND_URL}/${store.name}/checkout?error=payment_failed`,
+      successUrl: `${store.domain === 'omenshoes.com' ? (process.env.FRONTEND_URL_SHOES || 'https://o-men-2-l3ol.vercel.app') : (process.env.FRONTEND_URL_WELLNESS || 'https://o-men-2.vercel.app')}/order-success?ref={reference}`,
+      errorUrl: `${store.domain === 'omenshoes.com' ? (process.env.FRONTEND_URL_SHOES || 'https://o-men-2-l3ol.vercel.app') : (process.env.FRONTEND_URL_WELLNESS || 'https://o-men-2.vercel.app')}/checkout?error=payment_failed`,
     });
 
     // 5. Mettre à jour la commande avec la référence GeniusPay
