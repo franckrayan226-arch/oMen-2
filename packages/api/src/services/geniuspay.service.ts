@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import crypto from 'crypto';
 
 interface GeniusPayConfig {
   apiKey: string;
@@ -96,7 +97,6 @@ class GeniusPayService {
     payload: string,
     signature: string
   ): boolean {
-    const crypto = require('crypto');
     const data = `${timestamp}.${payload}`;
     const expectedSignature = crypto
       .createHmac('sha256', this.webhookSecret)

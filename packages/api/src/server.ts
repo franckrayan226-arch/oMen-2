@@ -14,7 +14,7 @@ import productsRouter from './routes/products.routes';
 import webhooksRouter from './routes/webhooks.routes';
 import dashboardRouter from './routes/dashboard.routes';
 
-dotenv.config();
+try { dotenv.config(); } catch {}
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -22,12 +22,15 @@ const PORT = process.env.PORT || 4000;
 // ============================================================
 // UPLOAD CONFIG (multer)
 // ============================================================
-const UPLOAD_DIR = path.resolve(process.cwd(), 'public', 'uploads');
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+const isVercel = !!process.env.VERCEL;
+const UPLOAD_DIR = isVercel ? '/tmp' : path.resolve(process.cwd(), 'public', 'uploads');
+if (!isVercel) {
+  try {
+    if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  } catch {}
 }
 
-const storage = multer.diskStorage({
+const storage = isVercel ? multer.memoryStorage() : multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -86,7 +89,12 @@ app.post('/api/upload', upload.array('files', 20), (req: any, res) => {
 
   const host = req.headers.host || `localhost:${PORT}`;
   const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-  const urls = files.map(f => `${protocol}://${host}/uploads/${f.filename}`);
+  const urls = files.map(f => {
+    if (isVercel) {
+      return `${protocol}://${host}/uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}${path.extname(f.originalname)}`;
+    }
+    return `${protocol}://${host}/uploads/${f.filename}`;
+  });
   res.json({ urls });
 });
 

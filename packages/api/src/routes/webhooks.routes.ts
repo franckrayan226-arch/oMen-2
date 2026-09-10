@@ -37,7 +37,7 @@ router.post('/geniuspay', async (req: Request, res: Response) => {
         orderId: '', // Sera mis à jour si la référence existe
         reference: data.reference,
         event,
-        payload: req.body,
+        payload: JSON.stringify(req.body),
       },
     });
 
