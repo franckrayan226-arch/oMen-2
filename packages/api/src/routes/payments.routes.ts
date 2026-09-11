@@ -54,7 +54,7 @@ router.post('/create', async (req: Request, res: Response) => {
         shipping,
         total,
         currency: 'XOF',
-        shippingAddress: shippingAddress || undefined,
+        shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : undefined,
         notes,
         items: {
           create: orderItems,
@@ -109,8 +109,9 @@ router.post('/create', async (req: Request, res: Response) => {
       orderId: order.id,
     });
   } catch (error: any) {
-    console.error('Payment creation error:', error.response?.data || error.message);
-    return res.status(500).json({ error: 'Payment creation failed' });
+    const details = error.response?.data || error.message || error;
+    console.error('Payment creation error:', JSON.stringify(details));
+    return res.status(500).json({ error: 'Payment creation failed', details: typeof details === 'string' ? details : JSON.stringify(details) });
   }
 });
 

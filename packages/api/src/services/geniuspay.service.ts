@@ -65,6 +65,8 @@ class GeniusPayService {
     if (params.customer) payload.customer = params.customer;
     if (params.metadata) payload.metadata = params.metadata;
     if (params.paymentMethod) payload.payment_method = params.paymentMethod;
+    if (params.successUrl) payload.success_url = params.successUrl;
+    if (params.errorUrl) payload.error_url = params.errorUrl;
 
     const { data } = await this.client.post<GeniusPayResponse>(
       '/api/v1/merchant/payments',
