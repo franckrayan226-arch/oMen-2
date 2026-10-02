@@ -4,22 +4,22 @@ const CATEGORIES = [
   {
     name: "Smartphones",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790965820/omen-tech/rxm3uv7izty4rzbsnyfq.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970071/omen-tech/xbnxm1d60jmckcxlnxiy.jpg",
   },
   {
     name: "Ordinateurs",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790965823/omen-tech/s9rm2qghftuc89fb1gkf.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970063/omen-tech/qk1te1akhbgpziqfv6kb.jpg",
   },
   {
     name: "Audio",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790965816/omen-tech/gutjf5iekx0j1bkon5si.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970067/omen-tech/cm8cj6jxylswg0h6dakf.jpg",
   },
   {
     name: "Tablettes",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790965829/omen-tech/gzyqkmujncmszyohqy6m.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970069/omen-tech/ibgj8fdmt1bgaiwregrg.jpg",
   },
   {
     name: "Montres",
