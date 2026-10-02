@@ -54,7 +54,7 @@ export function CategoryRail() {
               className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-            <span className="absolute bottom-3 left-3 font-graffiti text-[14px] leading-none text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
+            <span className="font-bungee absolute bottom-3 left-3 text-[13px] leading-none text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
               {c.name}
             </span>
           </Link>

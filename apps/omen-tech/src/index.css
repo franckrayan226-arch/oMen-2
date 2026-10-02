@@ -1,6 +1,7 @@
 @import "@fontsource-variable/space-grotesk";
 @import "@fontsource-variable/jetbrains-mono";
 @import "@fontsource/permanent-marker";
+@import "@fontsource/bungee";
 
 @tailwind base;
 @tailwind components;
@@ -33,6 +34,10 @@ h3,
 
 .font-graffiti {
   font-family: "Permanent Marker", "Comic Sans MS", cursive;
+}
+
+.font-bungee {
+  font-family: "Bungee", "Arial Black", system-ui, sans-serif;
 }
 
 img {
