@@ -3,7 +3,10 @@ import { api, getToken, setToken, onAuthChange } from "@/api";
 
 export function useAuth() {
   const [token, setTok] = useState<string | null>(getToken());
-  useEffect(() => onAuthChange(setTok), []);
+  useEffect(() => {
+    const unsub = onAuthChange(setTok);
+    return () => { unsub(); };
+  }, []);
 
   return {
     isAuthed: !!token,

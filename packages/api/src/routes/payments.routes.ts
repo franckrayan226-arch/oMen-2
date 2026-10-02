@@ -1,11 +1,10 @@
 import { Router, Request, Response } from 'express';
-import { getGeniusPay, CreatePaymentParams } from '../services/geniuspay.service';
 import { PrismaClient } from '@prisma/client';
 
 const router = Router();
 const prisma = new PrismaClient();
 
-// POST /api/payments/create — Créer un paiement
+// POST /api/payments/create — Créer une commande (paiement à la livraison)
 router.post('/create', async (req: Request, res: Response) => {
   try {
     const { storeId, items, customer, shippingAddress, notes } = req.body;
@@ -43,10 +42,10 @@ router.post('/create', async (req: Request, res: Response) => {
       };
     });
 
-    const shipping = 0; // Configurable par store
+    const shipping = 0;
     const total = subtotal + shipping;
 
-    // 3. Créer la commande (statut PENDING)
+    // 3. Créer la commande (statut CONFIRMED — paiement à la livraison)
     const order = await prisma.order.create({
       data: {
         store: { connect: { id: storeId } },
@@ -54,8 +53,9 @@ router.post('/create', async (req: Request, res: Response) => {
         shipping,
         total,
         currency: 'XOF',
+        paymentMethod: 'COD',
         shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : undefined,
-        notes,
+        notes: customer?.phone ? `Tél: ${customer.phone}${customer.email ? ` — Email: ${customer.email}` : ''}${notes ? ` — ${notes}` : ''}` : notes,
         items: {
           create: orderItems,
         },
@@ -63,83 +63,35 @@ router.post('/create', async (req: Request, res: Response) => {
       include: { items: true },
     });
 
-    // 4. Appeler GeniusPay
-    const geniusPay = getGeniusPay();
-    const payment = await geniusPay.createPayment({
-      amount: total,
-      currency: 'XOF',
-      description: `Commande ${store.displayName} #${order.id.slice(-8).toUpperCase()}`,
-      customer: {
-        name: customer?.name,
-        email: customer?.email,
-        phone: customer?.phone,
-      },
-      metadata: {
-        order_id: order.id,
-        store_id: storeId,
-        store_name: store.name,
-      },
-      successUrl: `${store.domain === 'omenshoes.com' ? (process.env.FRONTEND_URL_SHOES || 'https://o-men-2-l3ol.vercel.app') : (process.env.FRONTEND_URL_WELLNESS || 'https://o-men-2.vercel.app')}/order-success?ref={reference}`,
-      errorUrl: `${store.domain === 'omenshoes.com' ? (process.env.FRONTEND_URL_SHOES || 'https://o-men-2-l3ol.vercel.app') : (process.env.FRONTEND_URL_WELLNESS || 'https://o-men-2.vercel.app')}/checkout?error=payment_failed`,
-    });
-
-    // 5. Mettre à jour la commande avec la référence GeniusPay
-    await prisma.order.update({
-      where: { id: order.id },
-      data: {
-        reference: payment.data.reference,
-        paymentMethod: payment.data.payment_method || null,
-      },
-    });
-
-    // 6. Logger le paiement
-    await prisma.paymentLog.create({
-      data: {
-        orderId: order.id,
-        reference: payment.data.reference,
-        event: 'payment.created',
-        payload: payment.data as any,
-      },
-    });
-
     return res.json({
       success: true,
-      checkoutUrl: payment.data.checkout_url || payment.data.payment_url,
-      reference: payment.data.reference,
       orderId: order.id,
+      reference: `ORD-${order.id.slice(-8).toUpperCase()}`,
+      redirectUrl: null,
     });
   } catch (error: any) {
     const details = error.response?.data || error.message || error;
-    console.error('Payment creation error:', JSON.stringify(details));
-    return res.status(500).json({ error: 'Payment creation failed', details: typeof details === 'string' ? details : JSON.stringify(details) });
+    console.error('Order creation error:', JSON.stringify(details));
+    return res.status(500).json({ error: 'Order creation failed', details: typeof details === 'string' ? details : JSON.stringify(details) });
   }
 });
 
-// GET /api/payments/:reference — Vérifier le statut d'un paiement
+// GET /api/payments/:reference — Récupérer une commande
 router.get('/:reference', async (req: Request, res: Response) => {
   try {
-    const geniusPay = getGeniusPay();
-    const payment = await geniusPay.getPayment(req.params.reference);
+    const reference = req.params.reference;
+    const order = await prisma.order.findFirst({
+      where: { OR: [{ id: reference }, { reference }] },
+      include: { items: true },
+    });
 
-    // Sync le statut en DB
-    if (payment.success) {
-      const statusMap: Record<string, string> = {
-        completed: 'PROCESSING',
-        failed: 'CANCELLED',
-      };
-      const newStatus = statusMap[payment.data.status];
-
-      if (newStatus) {
-        await prisma.order.updateMany({
-          where: { reference: req.params.reference },
-          data: { status: newStatus as any },
-        });
-      }
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
     }
 
-    return res.json(payment);
+    return res.json({ success: true, order });
   } catch (error: any) {
-    return res.status(500).json({ error: 'Failed to fetch payment' });
+    return res.status(500).json({ error: 'Failed to fetch order' });
   }
 });
 

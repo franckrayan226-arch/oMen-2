@@ -1,4 +1,4 @@
-export type SiteKey = "shoes" | "wellness";
+export type SiteKey = "shoes" | "wellness" | "tech";
 
 export interface ColorDef {
   id?: string;
@@ -112,6 +112,7 @@ export interface Order {
 export const STORES = {
   shoes: { id: "omen-shoes", name: "oMen Shoes", category: "Sneakers" },
   wellness: { id: "omen-wellness", name: "oMen Wellness", category: "Bien-être" },
+  tech: { id: "omen-tech", name: "oMen Tech", category: "Smartphones" },
 } as const;
 
 export const DEFAULT_SIZES_SHOES = ["38", "39", "40", "41", "42", "43", "44"];

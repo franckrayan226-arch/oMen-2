@@ -42,6 +42,7 @@ export default function Layout() {
             <p className="font-semibold text-[#111]">Sites</p>
             <p>Sneaker — localhost:3001</p>
             <p>Wellness — localhost:3002</p>
+            <p>Tech — localhost:3003</p>
           </div>
           <button onClick={logout} className="text-[12px] font-medium text-[#888] transition hover:text-[#111]">
             Se déconnecter

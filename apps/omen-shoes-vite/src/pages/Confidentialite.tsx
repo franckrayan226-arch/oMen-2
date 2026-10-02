@@ -29,7 +29,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: "4. Paiements",
     body: [
-      "Les paiements sont traités par des prestataires externes : Wave, Orange Money, MTN MoMo et GeniusPay.",
+      "Les paiements sont traités par des prestataires locaux : Wave, Orange Money, MTN MoMo.",
       "Nous ne voyons, ne stockons et ne manipulons jamais vos codes secrets, numéros complets de carte ou identifiants de paiement. Le paiement est validé directement par le prestataire.",
     ],
   },

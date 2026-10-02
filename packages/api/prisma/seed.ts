@@ -29,7 +29,19 @@ async function main() {
     },
   });
 
-  console.log('Boutiques créées: omen-shoes, omen-wellness');
+  await prisma.store.upsert({
+    where: { id: 'omen-tech' },
+    update: {},
+    create: {
+      id: 'omen-tech',
+      name: 'omen-tech',
+      displayName: 'oMen Tech',
+      domain: 'omentech.com',
+      active: true,
+    },
+  });
+
+  console.log('Boutiques créées: omen-shoes, omen-wellness, omen-tech');
 
   // 2. Créer l'admin
   const existing = await prisma.adminUser.findUnique({ where: { email: 'admin@omen.tg' } });

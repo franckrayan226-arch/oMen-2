@@ -53,7 +53,7 @@ export function Footer() {
             <li>Sous 24h à Lomé & Ouaga</li>
             <li>Autres villes via agence</li>
             <li>Wave / Orange / MTN</li>
-            <li>GeniusPay</li>
+            <li>Paiement à la livraison</li>
           </ul>
         </div>
 

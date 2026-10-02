@@ -12,7 +12,6 @@ import adminRouter from './routes/admin.routes';
 import paymentsRouter from './routes/payments.routes';
 import ordersRouter from './routes/orders.routes';
 import productsRouter from './routes/products.routes';
-import webhooksRouter from './routes/webhooks.routes';
 import dashboardRouter from './routes/dashboard.routes';
 
 try { dotenv.config(); } catch {}
@@ -58,8 +57,6 @@ if (useCloudinary) {
 // ============================================================
 // MIDDLEWARE
 // ============================================================
-
-app.use('/api/webhooks', express.raw({ type: 'application/json' }));
 
 app.use(helmet());
 app.use(cors({
@@ -126,7 +123,6 @@ app.use('/api/admin', adminRouter);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/products', productsRouter);
-app.use('/api/webhooks', webhooksRouter);
 app.use('/api/dashboard', dashboardRouter);
 
 app.get('/api/health', (_req, res) => {

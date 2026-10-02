@@ -4,7 +4,7 @@ import { api } from "@/api";
 import type { ProductCard } from "@/types";
 import { fmt } from "@/lib/format";
 
-type Tab = "all" | "shoes" | "wellness";
+type Tab = "all" | "shoes" | "wellness" | "tech";
 
 export default function ProductsPage() {
   const [items, setItems] = useState<ProductCard[]>([]);
@@ -17,7 +17,13 @@ export default function ProductsPage() {
   const load = () => {
     setLoading(true);
     api.products()
-      .then(setItems)
+      .then((raw) => {
+        const withSite = raw.map((p: any) => ({
+          ...p,
+          site: p.storeId === "omen-shoes" ? "shoes" : p.storeId === "omen-tech" ? "tech" : "wellness",
+        }));
+        setItems(withSite);
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   };
@@ -55,6 +61,7 @@ export default function ProductsPage() {
     all: items.length,
     shoes: items.filter((p) => p.site === "shoes").length,
     wellness: items.filter((p) => p.site === "wellness").length,
+    tech: items.filter((p) => p.site === "tech").length,
   };
 
   return (
@@ -62,7 +69,7 @@ export default function ProductsPage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Produits</h1>
-          <p className="mt-0.5 text-[12.5px] text-[#777]">Les deux boutiques — sneaker et bien-être.</p>
+          <p className="mt-0.5 text-[12.5px] text-[#777]">Les trois boutiques — sneaker, bien-être et tech.</p>
         </div>
         <Link
           to="/produits/nouveau"
@@ -78,6 +85,7 @@ export default function ProductsPage() {
             ["all", `Tous (${counts.all})`],
             ["shoes", `Sneaker (${counts.shoes})`],
             ["wellness", `Wellness (${counts.wellness})`],
+            ["tech", `Tech (${counts.tech})`],
           ] as [Tab, string][]
         ).map(([key, label]) => (
           <button
@@ -128,7 +136,7 @@ export default function ProductsPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-black/[0.05] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#666]">
-                      {p.site === "shoes" ? "Sneaker" : "Wellness"}
+                      {p.site === "shoes" ? "Sneaker" : p.site === "tech" ? "Tech" : "Wellness"}
                     </span>
                     {p.badge && <span className="rounded-md bg-blue-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#1d4ed8]">{p.badge}</span>}
                   </div>

@@ -29,7 +29,7 @@ export default function Login() {
         <h1 className="mt-2 text-2xl font-extrabold tracking-tight" style={{ fontFamily: '"Playfair Display", serif', fontStyle: "italic" }}>
           Dashboard
         </h1>
-        <p className="mt-1 text-[12.5px] text-[#666]">Omen Sneaker &amp; Omen Wellness — gestion centralisée.</p>
+        <p className="mt-1 text-[12.5px] text-[#666]">Omen Sneaker, Wellness &amp; Tech — gestion centralisée.</p>
 
         <form onSubmit={submit} className="mt-6 space-y-3">
           <div>

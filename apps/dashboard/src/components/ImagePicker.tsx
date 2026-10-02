@@ -21,7 +21,7 @@ export function ImagePicker({ images, onChange, site, label = "Images" }: Props)
     setError("");
     setBusy(true);
     try {
-      const r = await api.uploadFiles(Array.from(files), site);
+      const r = await api.uploadFiles(Array.from(files));
       addUrls(r.uploads.map((u: { url: string }) => u.url));
     } catch (e: any) {
       setError(e.message || "Import impossible");
@@ -37,7 +37,7 @@ export function ImagePicker({ images, onChange, site, label = "Images" }: Props)
     setError("");
     setBusy(true);
     try {
-      const r = await api.importUrl(link, site);
+      const r = await api.importUrl(link);
       addUrls(r.uploads.map((u: { url: string }) => u.url));
       setUrl("");
     } catch (e: any) {

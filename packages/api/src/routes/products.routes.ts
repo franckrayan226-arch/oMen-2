@@ -12,7 +12,7 @@ router.get('/', async (req: Request, res: Response) => {
     const where: any = {};
     if (!includeInactive) where.active = true;
     const storeFilter = (site as string) || (storeId as string);
-    if (storeFilter) where.storeId = storeFilter === 'shoes' ? 'omen-shoes' : storeFilter === 'wellness' ? 'omen-wellness' : storeFilter;
+    if (storeFilter) where.storeId = storeFilter === 'shoes' ? 'omen-shoes' : storeFilter === 'wellness' ? 'omen-wellness' : storeFilter === 'tech' ? 'omen-tech' : storeFilter;
     if (category) where.category = category as string;
     if (featured === 'true') where.featured = true;
     if (search) {

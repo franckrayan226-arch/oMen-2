@@ -29,11 +29,9 @@ export default function Checkout() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erreur paiement");
-      if (data.checkoutUrl) {
-        clearCart();
-        window.location.href = data.checkoutUrl;
-      }
+      if (!res.ok) throw new Error(data.error || "Erreur commande");
+      clearCart();
+      window.location.href = `/order-success?ref=${data.reference || data.orderId}`;
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -106,7 +104,7 @@ export default function Checkout() {
             <button type="submit" disabled={loading} className="btn-terra w-full rounded-full py-4 text-[11px] font-semibold uppercase tracking-[0.18em] disabled:opacity-50">
               {loading ? "Redirection..." : `Payer ${total.toLocaleString("fr-FR")} FCFA`}
             </button>
-            <p className="text-center text-[9px] uppercase tracking-[0.2em] text-[#17211a]/45">Paiement sécurisé via GeniusPay</p>
+            <p className="text-center text-[9px] uppercase tracking-[0.2em] text-[#17211a]/45">Paiement à la livraison</p>
           </form>
         </div>
       </main>

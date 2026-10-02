@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "windows-gcc-x64",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "cStandard": "${default}",
+            "cppStandard": "${default}",
+            "intelliSenseMode": "windows-gcc-x64",
+            "compilerArgs": [
+                ""
+            ],
+            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe"
+        },
+        {
+            "name": "\"C:\\Users\\hp\\Downloads\\mingw-w64-v11.0.0\\mingw-w64-v11.0.0\"",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ]
+        }
+    ],
+    "version": 4
+}

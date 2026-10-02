@@ -21,7 +21,7 @@ const SERVICES = [
   },
   {
     title: "Paiement local",
-    text: "Wave, Orange Money, MTN MoMo, GeniusPay. En ligne ou à la livraison.",
+    text: "Wave, Orange Money, MTN MoMo. À la livraison.",
     icon: (
       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.6">
         <rect x="2" y="5" width="20" height="14" rx="2" />

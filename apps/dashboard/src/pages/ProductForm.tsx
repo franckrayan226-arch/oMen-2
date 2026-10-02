@@ -22,6 +22,17 @@ const WELLNESS_CATEGORIES = [
   "Accessoires",
 ];
 
+const TECH_CATEGORIES = [
+  "Smartphones",
+  "Ordinateurs",
+  "Audio",
+  "Tablettes",
+  "Accessoires",
+  "Montres",
+  "Gaming",
+  "Réseau",
+];
+
 function slugify(s: string) {
   return s
     .toLowerCase()
@@ -62,9 +73,9 @@ export default function ProductForm() {
   const [urlInput, setUrlInput] = useState("");
   const [uploading, setUploading] = useState(false);
 
-  const siteKey = storeId === "omen-shoes" ? "shoes" : "wellness";
-  const defaultSizes = siteKey === "shoes" ? DEFAULT_SIZES_SHOES : DEFAULT_SIZES_APPAREL;
-  const categories = siteKey === "shoes" ? SHOES_CATEGORIES : WELLNESS_CATEGORIES;
+  const siteKey = storeId === "omen-shoes" ? "shoes" : storeId === "omen-tech" ? "tech" : "wellness";
+  const defaultSizes = siteKey === "shoes" ? DEFAULT_SIZES_SHOES : siteKey === "tech" ? ["Standard"] : DEFAULT_SIZES_APPAREL;
+  const categories = siteKey === "shoes" ? SHOES_CATEGORIES : siteKey === "tech" ? TECH_CATEGORIES : WELLNESS_CATEGORIES;
 
   // Load existing product for edit
   useEffect(() => {
@@ -376,14 +387,14 @@ export default function ProductForm() {
         {/* ── STORE SELECT ── */}
         <Section title="Boutique">
           <div className="flex gap-3">
-            {(["omen-shoes", "omen-wellness"] as const).map((s) => (
+            {(["omen-shoes", "omen-wellness", "omen-tech"] as const).map((s) => (
               <button
                 key={s}
                 type="button"
                 onClick={() => {
                   setStoreId(s);
                   setCategory(
-                    s === "omen-shoes" ? "Sneakers" : "Compléments"
+                    s === "omen-shoes" ? "Sneakers" : s === "omen-tech" ? "Smartphones" : "Compléments"
                   );
                 }}
                 className={`flex-1 rounded-lg border-2 px-4 py-3 text-sm font-medium transition ${
@@ -392,7 +403,7 @@ export default function ProductForm() {
                     : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
                 }`}
               >
-                {s === "omen-shoes" ? "oMen Shoes" : "oMen Wellness"}
+                {s === "omen-shoes" ? "oMen Shoes" : s === "omen-tech" ? "oMen Tech" : "oMen Wellness"}
               </button>
             ))}
           </div>

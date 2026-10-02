@@ -37,28 +37,26 @@ export default function Checkout() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erreur paiement");
-      if (data.checkoutUrl) {
-        // rattacher la commande au compte connecté (silencieux si invité)
-        addOrder({
-          items: items.map((i) => ({
-            productId: i.productId,
-            slug: i.slug,
-            name: i.name,
-            brand: i.brand,
-            price: i.price,
-            image: i.image,
-            size: i.size,
-            quantity: i.quantity,
-          })),
-          total,
-          city: form.city,
-          status: "confirmee",
-          paymentMethod: "GeniusPay",
-        });
-        clearCart();
-        window.location.href = data.checkoutUrl;
-      }
+      if (!res.ok) throw new Error(data.error || "Erreur commande");
+      // rattacher la commande au compte connecté (silencieux si invité)
+      addOrder({
+        items: items.map((i) => ({
+          productId: i.productId,
+          slug: i.slug,
+          name: i.name,
+          brand: i.brand,
+          price: i.price,
+          image: i.image,
+          size: i.size,
+          quantity: i.quantity,
+        })),
+        total,
+        city: form.city,
+        status: "confirmee",
+        paymentMethod: "COD",
+      });
+      clearCart();
+      window.location.href = `/order-success?ref=${data.reference || data.orderId}`;
     } catch (err: any) { setError(err.message); } finally { setLoading(false); }
   };
 
@@ -111,7 +109,7 @@ export default function Checkout() {
             <button type="submit" disabled={loading} className="w-full rounded-lg bg-[#1d4ed8] py-3.5 text-[14px] font-semibold text-white active:scale-[0.98] disabled:opacity-50 sm:py-4">
               {loading ? "Redirection..." : `Payer ${total.toLocaleString("fr-FR")} FCFA`}
             </button>
-            <p className="text-center text-[10px] text-[#999] sm:text-[11px]">Paiement sécurisé via GeniusPay</p>
+            <p className="text-center text-[10px] text-[#999] sm:text-[11px]">Paiement à la livraison</p>
           </form>
         </div>
       </main>
