@@ -21,7 +21,7 @@ export function Footer() {
               </div>
             </div>
             <p className="mt-4 max-w-[300px] text-[11px] leading-relaxed text-[#17211a]/70">
-              Préparé en petites séries. Minoxidil, sérums et outils — livrés à Lomé sous 24h, Togo & Burkina via agence.
+              Préparé en petites séries. Minoxidil, sérums et outils — livrés à Ouagadougou sous 24h, Burkina via agence.
             </p>
           </div>
 
@@ -36,9 +36,9 @@ export function Footer() {
               </svg>
             </button>
             <ul className={`space-y-2 text-[11px] text-[#17211a]/70 ${openSection === "info" ? "block" : "hidden"} sm:block`}>
-              <li>Livraison 24h à Lomé</li>
-              <li>Agences Togo & Burkina</li>
-              <li>Paiement : Wave · OM · MoMo</li>
+              <li>Livraison 24h à Ouaga</li>
+              <li>Agences Burkina Faso</li>
+              <li>Paiement : Orange Money · Moov Money</li>
               <li>Produits scellés d'origine</li>
             </ul>
           </div>
@@ -65,7 +65,7 @@ export function Footer() {
 
       <div className="glass-deep mx-auto mt-3 flex max-w-7xl flex-col items-center justify-between gap-2 rounded-full px-6 py-3.5 sm:flex-row">
         <p className="text-[8.5px] uppercase tracking-[0.22em] text-[#f4efe3]/65">© 2026 Omen Wellness — marque sœur d'Omen Sneaker</p>
-        <p className="text-[8.5px] uppercase tracking-[0.22em] text-[#f4efe3]/65">Préparé à Lomé</p>
+        <p className="text-[8.5px] uppercase tracking-[0.22em] text-[#f4efe3]/65">Préparé à Ouagadougou</p>
       </div>
     </footer>
   );

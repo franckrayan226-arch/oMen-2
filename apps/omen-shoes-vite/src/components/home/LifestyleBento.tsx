@@ -21,7 +21,7 @@ export function LifestyleBento() {
             
             <div className="absolute bottom-0 left-0 p-6 sm:p-12 w-full flex flex-col justify-end">
               <h3 className="text-white text-[28px] sm:text-[48px] font-bold leading-tight mb-4" style={{ fontFamily: '"Playfair Display", serif', fontStyle: "italic" }}>Streetwear<br/>Authentique</h3>
-              <p className="text-white/80 text-[14px] sm:text-[16px] max-w-sm mb-8">Affirmez votre identité avec notre sélection exclusive des meilleures paires de sneakers au Togo et au Burkina Faso.</p>
+              <p className="text-white/80 text-[14px] sm:text-[16px] max-w-sm mb-8">Affirmez votre identité avec notre sélection exclusive des meilleures paires de sneakers au Burkina Faso.</p>
               <Link to="/catalogue" className="w-fit rounded-full bg-white text-black px-8 py-3.5 text-[14px] font-bold transition-all hover:scale-105 active:scale-95 shadow-xl">
                 Explorer la collection
               </Link>

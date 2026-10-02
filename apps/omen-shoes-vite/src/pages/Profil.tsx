@@ -71,7 +71,7 @@ function AuthScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPass, setShowPass] = useState(false);
-  const [form, setForm] = useState({ id: "", password: "", name: "", email: "", phone: "", city: "Lomé", address: "" });
+  const [form, setForm] = useState({ id: "", password: "", name: "", email: "", phone: "", city: "Ouagadougou", address: "" });
 
   const switchMode = (m: "login" | "register") => {
     setMode(m);
@@ -142,7 +142,7 @@ function AuthScreen() {
               type="text"
               value={form.id}
               onChange={(v) => setForm({ ...form, id: v })}
-              placeholder="toi@email.com ou +228 90 00 00 00"
+              placeholder="toi@email.com ou +226 70 00 00 00"
               autoComplete="username"
               required
             />
@@ -170,7 +170,7 @@ function AuthScreen() {
           <>
             <Field label="Nom complet" value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="Awa Mensah" autoComplete="name" required />
             <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} placeholder="toi@email.com" autoComplete="email" required />
-            <Field label="Téléphone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="+228 90 12 34 56" autoComplete="tel" required />
+            <Field label="Téléphone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="+226 70 12 34 56" autoComplete="tel" required />
             <div className="grid grid-cols-2 gap-3">
               <label className="block">
                 <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.18em] text-[#111]/50">Ville</span>
@@ -179,8 +179,8 @@ function AuthScreen() {
                   onChange={(e) => setForm({ ...form, city: e.target.value })}
                   className="glass-input h-12 w-full rounded-xl px-3 text-[14px] text-[#111] outline-none"
                 >
-                  <option>Lomé</option><option>Kara</option><option>Sokodé</option><option>Kpalimé</option>
                   <option>Ouagadougou</option><option>Bobo-Dioulasso</option><option>Koudougou</option>
+                  <option>Ouahigouya</option><option>Banfora</option><option>Kaya</option>
                 </select>
               </label>
               <Field label="Adresse" value={form.address} onChange={(v) => setForm({ ...form, address: v })} placeholder="Quartier, rue" autoComplete="street-address" />
@@ -286,7 +286,7 @@ function OrderRow({ order }: { order: OrderRecord }) {
               <p className="shrink-0 text-[12px] font-semibold text-[#111]">{(it.price * it.quantity).toLocaleString("fr-FR")} F</p>
             </div>
           ))}
-          <p className="pt-1 text-[10.5px] text-[#111]/40">Paiement : {order.paymentMethod}</p>
+          <p className="pt-1 text-[10.5px] text-[#111]/40">Paiement : {order.paymentMethod === "ORANGE_MONEY" ? "Orange Money" : order.paymentMethod === "MOOV_MONEY" ? "Moov Money" : order.paymentMethod}</p>
         </div>
       )}
     </div>
@@ -429,8 +429,8 @@ function AccountScreen({ user: session }: { user: PublicUser }) {
                 <label className="block">
                   <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.18em] text-[#111]/50">Ville</span>
                   <select value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })} className="glass-input h-12 w-full rounded-xl px-3 text-[14px] text-[#111] outline-none">
-                    <option>Lomé</option><option>Kara</option><option>Sokodé</option><option>Kpalimé</option>
                     <option>Ouagadougou</option><option>Bobo-Dioulasso</option><option>Koudougou</option>
+                    <option>Ouahigouya</option><option>Banfora</option><option>Kaya</option>
                   </select>
                 </label>
                 <Field label="Adresse" value={editForm.address} onChange={(v) => setEditForm({ ...editForm, address: v })} autoComplete="street-address" />

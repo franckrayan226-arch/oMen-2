@@ -37,8 +37,8 @@ export function Footer() {
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#999]">Infos</p>
             <ul className="mt-4 space-y-2.5 text-[13px] text-[#555]">
-              <li>Livraison Togo &amp; Burkina Faso</li>
-              <li>Paiement à la livraison</li>
+              <li>Livraison Burkina Faso</li>
+              <li>Paiement Orange Money &amp; Moov Money</li>
               <li>Garantie 12 mois</li>
             </ul>
           </div>
@@ -46,7 +46,7 @@ export function Footer() {
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#999]">Contact</p>
             <ul className="mt-4 space-y-2.5 text-[13px] text-[#555]">
-              <li>Lomé (TG) &amp; Ouagadougou (BF)</li>
+              <li>Ouagadougou (BF)</li>
               <li>contact@omentech.tg</li>
             </ul>
           </div>

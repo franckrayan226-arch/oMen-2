@@ -21,7 +21,7 @@ export default function Profil() {
             <div>
               <p className="label-mono text-[8.5px] text-[#b4552d]">Compte client</p>
               <h1 className="font-display mt-1.5 text-[22px] text-[#17211a] sm:text-[26px]">Omen Wellness</h1>
-              <p className="mt-0.5 text-[11px] text-[#17211a]/60">Lomé, Togo</p>
+              <p className="mt-0.5 text-[11px] text-[#17211a]/60">Ouagadougou, Burkina Faso</p>
             </div>
           </div>
 
@@ -53,7 +53,7 @@ export default function Profil() {
           <div className="glass-soft mt-4 rounded-3xl p-5">
             <p className="label-mono text-[8.5px] text-[#17211a]/50">Contact</p>
             <p className="mt-2 text-[11.5px] text-[#17211a]/70">Conseil & commandes : WhatsApp</p>
-            <p className="text-[11.5px] text-[#17211a]/70">Lomé, Togo — Ouagadougou, Burkina Faso</p>
+            <p className="text-[11.5px] text-[#17211a]/70">Ouagadougou &amp; Bobo-Dioulasso — Burkina Faso</p>
           </div>
         </div>
       </main>

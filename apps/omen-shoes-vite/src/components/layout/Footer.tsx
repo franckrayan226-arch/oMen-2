@@ -19,7 +19,7 @@ export function Footer() {
               <span className="block text-[8px] font-bold uppercase tracking-[0.2em] text-[#1d4ed8]">Dare to be different</span>
             </div>
           </div>
-          <p className="text-[12px] leading-relaxed text-[#666] max-w-[260px] sm:text-[13px]">Sneakers authentiques. Livraison rapide Lomé & Ouaga. Togo & Burkina Faso.</p>
+          <p className="text-[12px] leading-relaxed text-[#666] max-w-[260px] sm:text-[13px]">Sneakers authentiques. Livraison rapide Ouaga &amp; Bobo. Burkina Faso.</p>
           <div className="mt-4 flex gap-3">
             <a href="https://wa.me/22890000000" target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform hover:scale-110" aria-label="WhatsApp">
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -50,10 +50,10 @@ export function Footer() {
             </svg>
           </button>
           <ul className={`space-y-1 text-[11px] text-[#666] sm:space-y-1.5 sm:text-[12px] ${openSection === 'livraison' ? 'block' : 'hidden'} sm:block`}>
-            <li>Sous 24h à Lomé & Ouaga</li>
+            <li>Sous 24h à Ouaga &amp; Bobo</li>
             <li>Autres villes via agence</li>
-            <li>Wave / Orange / MTN</li>
-            <li>Paiement à la livraison</li>
+            <li>Orange Money / Moov Money</li>
+            <li>Paiement Orange Money / Moov Money</li>
           </ul>
         </div>
 

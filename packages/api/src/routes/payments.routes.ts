@@ -4,10 +4,10 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-// POST /api/payments/create — Créer une commande (paiement à la livraison)
+// POST /api/payments/create — Créer une commande (Orange Money / Moov Money via USSD)
 router.post('/create', async (req: Request, res: Response) => {
   try {
-    const { storeId, items, customer, shippingAddress, notes } = req.body;
+    const { storeId, items, customer, shippingAddress, notes, paymentMethod } = req.body;
 
     if (!storeId || !items?.length) {
       return res.status(400).json({ error: 'storeId and items required' });
@@ -58,7 +58,8 @@ router.post('/create', async (req: Request, res: Response) => {
 
     const reference = `ORD-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
 
-    // 3. Créer la commande (statut PENDING — paiement à la livraison)
+    // 3. Créer la commande (statut PENDING — payée par USSD Orange/Moov)
+    const pm = paymentMethod === 'ORANGE_MONEY' || paymentMethod === 'MOOV_MONEY' ? paymentMethod : 'COD';
     const order = await prisma.order.create({
       data: {
         store: { connect: { id: storeId } },
@@ -67,7 +68,7 @@ router.post('/create', async (req: Request, res: Response) => {
         shipping,
         total,
         currency: 'XOF',
-        paymentMethod: 'COD',
+        paymentMethod: pm,
         status: 'PENDING',
         shippingAddress: Object.keys(addr).length ? JSON.stringify(addr) : undefined,
         notes: customer?.phone ? `Tél: ${customer.phone}${customer.email ? ` — Email: ${customer.email}` : ''}${notes ? ` — ${notes}` : ''}` : notes,

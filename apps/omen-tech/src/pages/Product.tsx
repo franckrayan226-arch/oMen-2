@@ -217,7 +217,7 @@ export default function Product() {
               <div className="mt-8 space-y-3 border-t border-[#e5e5e5] pt-6">
                 {[
                   "Livraison en 24-48h",
-                  "Paiement à la livraison",
+                  "Paiement Orange Money / Moov Money",
                   "Garantie 12 mois",
                 ].map((line) => (
                   <div key={line} className="flex items-center gap-3 text-[13px] text-[#555]">

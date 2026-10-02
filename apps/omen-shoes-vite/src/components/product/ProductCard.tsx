@@ -161,7 +161,7 @@ export function ProductCard({ id, slug, name, brand, price, compareAt, colors, b
           {compareAt ? (
             <span className="text-[10px] font-medium text-[#111]/40 line-through">{compareAt.toLocaleString("fr-FR")} F</span>
           ) : (
-            <span className="text-[9.5px] font-medium tracking-wide text-[#111]/40">Livraison 24h · Lomé & Ouaga</span>
+            <span className="text-[9.5px] font-medium tracking-wide text-[#111]/40">Livraison 24h · Ouaga &amp; Bobo</span>
           )}
 
           <span

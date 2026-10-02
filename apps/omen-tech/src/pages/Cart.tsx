@@ -94,7 +94,7 @@ export default function Cart() {
             >
               Passer la commande
             </Link>
-            <p className="text-[12px] text-[#999]">Paiement à la livraison</p>
+            <p className="text-[12px] text-[#999]">Orange Money / Moov Money</p>
           </div>
         </div>
       </main>

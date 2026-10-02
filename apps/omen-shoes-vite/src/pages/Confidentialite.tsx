@@ -7,7 +7,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: "1. Qui nous sommes",
     body: [
-      "Omen Sneaker est une boutique de sneakers authentiques opérant au Togo et au Burkina Faso, avec une disponibilité à Lomé et à Ouagadougou. Nous vendons en ligne via ce site et assurons la livraison dans les deux pays.",
+      "Omen Sneaker est une boutique de sneakers authentiques opérant au Burkina Faso, avec une disponibilité à Ouagadougou et à Bobo-Dioulasso. Nous vendons en ligne via ce site et assurons la livraison dans tout le pays.",
       "Pour toute question relative à vos données : contactez-nous sur WhatsApp, réponse rapide.",
     ],
   },
@@ -29,7 +29,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: "4. Paiements",
     body: [
-      "Les paiements sont traités par des prestataires locaux : Wave, Orange Money, MTN MoMo.",
+      "Les paiements sont traités par USSD mobile money : Orange Money et Moov Money.",
       "Nous ne voyons, ne stockons et ne manipulons jamais vos codes secrets, numéros complets de carte ou identifiants de paiement. Le paiement est validé directement par le prestataire.",
     ],
   },

@@ -1,5 +1,5 @@
 export function Marquee() {
-  const words = ["Minoxidil 5%", "Sans propylène glycol", "Notice incluse", "Lomé · 24h", "Conseil WhatsApp", "Actifs dosés"];
+  const words = ["Minoxidil 5%", "Sans propylène glycol", "Notice incluse", "Ouaga · 24h", "Conseil WhatsApp", "Actifs dosés"];
 
   return (
     <div className="mx-auto max-w-[calc(100%-1.5rem)] overflow-hidden rounded-full glass-deep py-3 sm:max-w-[calc(100%-3rem)]" aria-hidden="true">

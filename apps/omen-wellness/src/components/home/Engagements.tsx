@@ -1,8 +1,8 @@
 const ITEMS = [
   { n: "01", title: "Formules courtes", text: "Listes d'ingrédients lisibles. Chaque actif est annoncé, dosé, justifié." },
   { n: "02", title: "Conseil suivi", text: "Avant l'achat, la routine se discute sur WhatsApp. Gratuit, sans engagement." },
-  { n: "03", title: "Livraison 24h", text: "Lomé sous 24h. Kara, Sokodé, Kpalimé et Burkina via agence partenaire." },
-  { n: "04", title: "Paiement local", text: "Wave, Orange Money, MTN MoMo. À la livraison." },
+  { n: "03", title: "Livraison 24h", text: "Ouagadougou sous 24h. Bobo, Koudougou, Kaya et le pays via agence partenaire." },
+  { n: "04", title: "Paiement mobile", text: "Orange Money et Moov Money, payés par USSD avant livraison." },
 ];
 
 export function Engagements() {

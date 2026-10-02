@@ -47,7 +47,7 @@ async function sha256(text: string): Promise<string> {
     .join("");
 }
 
-/** — primaire : email ; fallback : téléphone (les clients Togo n'ont pas tous un email) */
+/** — primaire : email ; fallback : téléphone (les clients du Burkina n'ont pas tous un email) */
 export const normalizeId = (raw: string) => raw.trim().toLowerCase();
 
 interface AuthStore {

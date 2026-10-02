@@ -4,7 +4,7 @@ const CATEGORIES = [
   {
     name: "Smartphones",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970071/omen-tech/xbnxm1d60jmckcxlnxiy.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970067/omen-tech/cm8cj6jxylswg0h6dakf.jpg",
   },
   {
     name: "Ordinateurs",
@@ -14,7 +14,7 @@ const CATEGORIES = [
   {
     name: "Audio",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970067/omen-tech/cm8cj6jxylswg0h6dakf.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790970071/omen-tech/xbnxm1d60jmckcxlnxiy.jpg",
   },
   {
     name: "Tablettes",

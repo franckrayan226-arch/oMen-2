@@ -1,7 +1,7 @@
 const SERVICES = [
   {
     title: "Livraison 24h",
-    text: "Lomé & Ouagadougou sous 24h. Kara, Bobo, Kpalimé via agence partenaire.",
+    text: "Ouaga & Bobo sous 24h. Koudougou, Kaya, Banfora via agence partenaire.",
     icon: (
       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.6">
         <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -21,7 +21,7 @@ const SERVICES = [
   },
   {
     title: "Paiement local",
-    text: "Wave, Orange Money, MTN MoMo. À la livraison.",
+    text: "Orange Money et Moov Money, payés par USSD avant livraison.",
     icon: (
       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.6">
         <rect x="2" y="5" width="20" height="14" rx="2" />

@@ -15,7 +15,7 @@ export function Hero() {
 
       <div className="relative mx-auto flex h-full max-w-[1400px] flex-col justify-end px-5 pb-12 lg:px-10 lg:pb-16">
         <p className="fade-up font-mono text-[11px] uppercase tracking-[0.28em] text-white/60">
-          Togo &amp; Burkina Faso — Livraison 24-48h
+          Burkina Faso &mdash; Livraison 24-48h
         </p>
 
         <h1 className="fade-up fade-up-1 mt-4 text-[52px] font-bold uppercase leading-[0.92] tracking-[-0.03em] text-white sm:text-[72px] lg:text-[96px]">
@@ -25,8 +25,8 @@ export function Hero() {
         </h1>
 
         <p className="fade-up fade-up-2 mt-5 max-w-[440px] text-[15px] leading-relaxed text-white/70">
-          Smartphones, ordinateurs, audio et accessoires — payés à la livraison,
-          chez vous.
+          Smartphones, ordinateurs, audio et accessoires &mdash; pay&eacute;s par
+          Orange Money ou Moov Money, chez vous.
         </p>
 
         <div className="fade-up fade-up-3 mt-8">

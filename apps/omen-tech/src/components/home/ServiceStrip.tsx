@@ -1,7 +1,7 @@
 const ITEMS = [
-  "Paiement à la livraison",
+  "Orange Money & Moov Money",
   "Livraison 24-48h",
-  "Togo & Burkina Faso",
+  "Burkina Faso",
   "Garantie 12 mois",
   "Retours sous 7 jours",
 ];
@@ -11,10 +11,10 @@ function Row() {
     <div className="flex shrink-0 items-center">
       {ITEMS.map((item) => (
         <span key={item} className="flex items-center">
-          <span className="px-6 font-graffiti text-[17px] leading-none text-white sm:text-[20px]">
+          <span className="px-6 font-bungee text-[13px] leading-none text-white sm:text-[15px]">
             {item}
           </span>
-          <span className="font-graffiti text-[15px] text-white/40">//</span>
+          <span className="font-bungee text-[12px] text-white/40">//</span>
         </span>
       ))}
     </div>
@@ -31,7 +31,7 @@ export function ServiceStrip() {
         <Row />
       </div>
       <span className="sr-only">
-        Paiement à la livraison, livraison 24-48h au Togo et au Burkina Faso,
+        Paiement Orange Money et Moov Money, livraison 24-48h au Burkina Faso,
         garantie 12 mois, retours sous 7 jours.
       </span>
     </div>

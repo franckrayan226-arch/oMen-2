@@ -156,7 +156,7 @@ export default function Product() {
                 <div className="mt-6 grid grid-cols-3 gap-2 rounded-2xl border border-white/50 bg-white/30 py-3.5 text-center">
                   <div>
                     <p className="label-mono text-[7.5px] text-[#17211a]/50">Livraison</p>
-                    <p className="mt-1 text-[10.5px] text-[#17211a]">24h Lomé</p>
+                    <p className="mt-1 text-[10.5px] text-[#17211a]">24h Ouaga</p>
                   </div>
                   <div className="border-x border-white/50">
                     <p className="label-mono text-[7.5px] text-[#17211a]/50">Sceau</p>
@@ -164,7 +164,7 @@ export default function Product() {
                   </div>
                   <div>
                     <p className="label-mono text-[7.5px] text-[#17211a]/50">Paiement</p>
-                    <p className="mt-1 text-[10.5px] text-[#17211a]">Wave · OM · MoMo</p>
+                    <p className="mt-1 text-[10.5px] text-[#17211a]">Orange Money · Moov Money</p>
                   </div>
                 </div>
               </div>
