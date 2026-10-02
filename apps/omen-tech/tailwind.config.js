@@ -10,10 +10,12 @@ export default {
         paper: "#fafafa",
         card: "#ffffff",
         line: "#e5e5e5",
-        accent: "#111111",
+        accent: "#1d4ed8",
       },
       fontFamily: {
         sans: ['"Outfit Variable"', '"Outfit"', "system-ui", "sans-serif"],
+        display: ['"Space Grotesk Variable"', '"Space Grotesk"', "system-ui", "sans-serif"],
+        mono: ['"JetBrains Mono Variable"', '"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       borderRadius: {
         none: "0",

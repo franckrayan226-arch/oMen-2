@@ -91,7 +91,7 @@ export default function Checkout() {
       <main className="flex-1">
         <div className="mx-auto max-w-[560px] px-5 py-12 lg:py-16">
           <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Étape 2</p>
-          <h1 className="mt-3 text-[36px] font-light tracking-tight lg:text-[44px]">Livraison</h1>
+          <h1 className="mt-3 text-[34px] font-bold uppercase tracking-[-0.02em] lg:text-[44px]">Livraison</h1>
 
           <form onSubmit={handleSubmit} className="mt-10 space-y-5">
             <div>

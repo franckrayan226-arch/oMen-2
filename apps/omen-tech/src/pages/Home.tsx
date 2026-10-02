@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Hero } from "@/components/home/Hero";
+import { CategoryRail } from "@/components/home/CategoryRail";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { ServiceStrip } from "@/components/home/ServiceStrip";
 
@@ -11,8 +12,9 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
-        <FeaturedProducts />
         <ServiceStrip />
+        <CategoryRail />
+        <FeaturedProducts />
       </main>
       <Footer />
       <BottomNav />

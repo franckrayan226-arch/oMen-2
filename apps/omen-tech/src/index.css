@@ -1,3 +1,6 @@
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/jetbrains-mono";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,6 +21,13 @@ body {
   background: #fafafa;
   color: #111111;
   line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
 }
 
 img {
@@ -59,7 +69,19 @@ a {
   animation: shimmer 1.4s infinite;
 }
 
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 26s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fade-up { animation: none; opacity: 1; transform: none; }
   .skeleton { animation: none; }
+  .marquee-track { animation: none; }
 }

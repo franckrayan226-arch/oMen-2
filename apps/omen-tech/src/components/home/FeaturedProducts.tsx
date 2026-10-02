@@ -17,8 +17,10 @@ export function FeaturedProducts() {
     <section className="mx-auto max-w-[1400px] px-5 py-16 lg:px-10 lg:py-24">
       <div className="flex items-end justify-between border-b border-[#e5e5e5] pb-5">
         <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Sélection</p>
-          <h2 className="mt-2 text-[28px] font-light tracking-tight lg:text-[34px]">À regarder</h2>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#999]">Sélection</p>
+          <h2 className="mt-2 text-[26px] font-bold uppercase tracking-[-0.02em] lg:text-[34px]">
+            À regarder
+          </h2>
         </div>
         <Link
           to="/catalogue"
@@ -88,7 +90,9 @@ export function FeaturedProducts() {
                     >
                       {p.name}
                     </Link>
-                    <p className="mt-0.5 truncate text-[12px] text-[#999]">{p.brand}</p>
+                    <p className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.14em] text-[#999]">
+                      {p.brand}
+                    </p>
                   </div>
                   <p className="shrink-0 text-[14px] font-medium">{formatPrice(p.price)}</p>
                 </div>

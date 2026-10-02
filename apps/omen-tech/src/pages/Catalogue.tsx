@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -56,7 +56,15 @@ function ProductCard({ p }: { p: ProductItem }) {
 
 export default function Catalogue() {
   const { products, loading } = useProducts();
-  const [cat, setCat] = useState("Tous");
+  const [searchParams] = useSearchParams();
+  const paramCat = searchParams.get("cat");
+  const [cat, setCat] = useState(
+    paramCat && CATEGORIES.includes(paramCat) ? paramCat : "Tous"
+  );
+
+  useEffect(() => {
+    if (paramCat && CATEGORIES.includes(paramCat)) setCat(paramCat);
+  }, [paramCat]);
 
   const filtered = useMemo(() => {
     if (cat === "Tous") return products;
@@ -68,8 +76,8 @@ export default function Catalogue() {
       <Navbar />
       <main className="flex-1">
         <div className="mx-auto max-w-[1400px] px-5 py-12 lg:px-10 lg:py-16">
-          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Boutique</p>
-          <h1 className="mt-3 text-[36px] font-light leading-tight tracking-tight lg:text-[48px]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#999]">Boutique</p>
+          <h1 className="mt-3 text-[34px] font-bold uppercase leading-tight tracking-[-0.02em] lg:text-[46px]">
             Tout le catalogue
           </h1>
 
@@ -78,7 +86,7 @@ export default function Catalogue() {
               <button
                 key={c}
                 onClick={() => setCat(c)}
-                className={`text-[13px] transition-colors duration-200 ${
+                className={`font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 ${
                   cat === c
                     ? "font-medium text-[#111]"
                     : "text-[#999] hover:text-[#555]"

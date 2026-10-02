@@ -38,7 +38,7 @@ export default function Cart() {
       <main className="flex-1">
         <div className="mx-auto max-w-[860px] px-5 py-12 lg:px-0 lg:py-16">
           <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Étape 1</p>
-          <h1 className="mt-3 text-[36px] font-light tracking-tight lg:text-[44px]">Panier</h1>
+          <h1 className="mt-3 text-[34px] font-bold uppercase tracking-[-0.02em] lg:text-[44px]">Panier</h1>
 
           <div className="mt-10 divide-y divide-[#e5e5e5] border-y border-[#e5e5e5]">
             {items.map((item) => (

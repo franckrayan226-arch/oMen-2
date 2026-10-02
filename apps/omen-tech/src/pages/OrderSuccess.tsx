@@ -15,7 +15,7 @@ export default function OrderSuccess() {
           <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">
             Confirmé
           </p>
-          <h1 className="mt-4 text-[36px] font-light leading-tight tracking-tight lg:text-[44px]">
+          <h1 className="mt-4 text-[34px] font-bold uppercase leading-tight tracking-[-0.02em] lg:text-[44px]">
             Commande reçue.
           </h1>
           <p className="mt-4 text-[15px] leading-relaxed text-[#555]">

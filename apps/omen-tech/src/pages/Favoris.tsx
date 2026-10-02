@@ -14,7 +14,7 @@ export default function Favoris() {
       <main className="flex-1">
         <div className="mx-auto max-w-[1400px] px-5 py-12 lg:px-10 lg:py-16">
           <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Sélection</p>
-          <h1 className="mt-3 text-[36px] font-light tracking-tight lg:text-[48px]">Favoris</h1>
+          <h1 className="mt-3 text-[34px] font-bold uppercase tracking-[-0.02em] lg:text-[46px]">Favoris</h1>
 
           {!items.length ? (
             <div className="mt-20 text-center">

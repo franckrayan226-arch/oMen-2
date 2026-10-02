@@ -59,12 +59,9 @@ export default function Product() {
     );
   }
 
-  const resolve = (u?: string) =>
-    !u ? "" : u.startsWith("http") || u.startsWith("/tech/") ? u : `${(import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "")}${u}`;
-
   const images: string[] = [
-    ...(product.images?.map((i: any) => resolve(i.url)) || []),
-    ...(product.colors?.flatMap((c: any) => c.images?.map((i: any) => resolve(i.url)) || []) || []),
+    ...(product.images?.map((i: any) => i.url) || []),
+    ...(product.colors?.flatMap((c: any) => c.images?.map((i: any) => i.url) || []) || []),
   ].filter(Boolean);
   const mainImage = images[selectedImage] || images[0] || "";
   const isFav = favs.some((f) => f.productId === product.id);
@@ -144,7 +141,7 @@ export default function Product() {
               <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">
                 {product.category}
               </p>
-              <h1 className="mt-3 text-[30px] font-light leading-tight tracking-tight lg:text-[40px]">
+              <h1 className="mt-3 text-[28px] font-bold leading-tight tracking-[-0.02em] lg:text-[38px]">
                 {product.name}
               </h1>
 

@@ -1,62 +1,43 @@
 import { Link } from "react-router-dom";
 
+const HERO_IMAGE =
+  "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_1920/v1790966248/omen-tech/wouuzz9vbppywbgiioyh.jpg";
+
 export function Hero() {
   return (
-    <section className="mx-auto max-w-[1400px] px-5 pt-8 lg:px-10 lg:pt-14">
-      <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-5 lg:pt-8">
-          <p className="fade-up text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">
-            Nouvelle saison
-          </p>
-          <h1 className="fade-up fade-up-1 mt-4 text-[42px] font-light leading-[1.04] tracking-tight sm:text-[56px] lg:text-[64px]">
-            Le tech qui
-            <br />
-            <span className="font-medium">compte vraiment.</span>
-          </h1>
-          <p className="fade-up fade-up-2 mt-5 max-w-[360px] text-[15px] leading-relaxed text-[#555]">
-            Smartphones, ordinateurs, audio et accessoires — livrés partout au Togo et au
-            Burkina Faso.
-          </p>
-          <div className="fade-up fade-up-3 mt-8 flex items-center gap-6">
-            <Link
-              to="/catalogue"
-              className="group inline-flex items-center gap-2 bg-[#111] px-6 py-3 text-[13px] font-medium text-white transition-opacity hover:opacity-80"
-            >
-              Voir la boutique
-              <span className="transition-transform duration-200 group-hover:translate-x-1">
-                &rarr;
-              </span>
-            </Link>
-            <Link
-              to="/catalogue"
-              className="text-[13px] font-medium text-[#555] underline underline-offset-4 transition-colors hover:text-[#111]"
-            >
-              Nouveautés
-            </Link>
-          </div>
-        </div>
+    <section className="relative h-[75vh] min-h-[540px] max-h-[820px] w-full overflow-hidden bg-black">
+      <img
+        src={HERO_IMAGE}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/30" />
 
-        <div className="lg:col-span-7">
-          <Link to="/catalogue" className="group block">
-            <div className="relative aspect-[4/3] overflow-hidden bg-[#f0f0f0]">
-              <img
-                src="/tech/hero.jpg"
-                alt="Technologie moderne"
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-5">
-                <div className="bg-[#fafafa]/95 px-4 py-3 backdrop-blur-sm">
-                  <p className="text-[14px] font-medium">Sélection 2026</p>
-                  <p className="mt-0.5 text-[13px] text-[#555]">
-                    Jusqu&rsquo;à -30% sur une sélection
-                  </p>
-                </div>
-                <span className="bg-[#111] p-3 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  &rarr;
-                </span>
-              </div>
-            </div>
+      <div className="relative mx-auto flex h-full max-w-[1400px] flex-col justify-end px-5 pb-12 lg:px-10 lg:pb-16">
+        <p className="fade-up font-mono text-[11px] uppercase tracking-[0.28em] text-white/60">
+          Togo &amp; Burkina Faso — Livraison 24-48h
+        </p>
+
+        <h1 className="fade-up fade-up-1 mt-4 text-[52px] font-bold uppercase leading-[0.92] tracking-[-0.03em] text-white sm:text-[72px] lg:text-[96px]">
+          La tech
+          <br />
+          sans d&eacute;tour.
+        </h1>
+
+        <p className="fade-up fade-up-2 mt-5 max-w-[440px] text-[15px] leading-relaxed text-white/70">
+          Smartphones, ordinateurs, audio et accessoires — payés à la livraison,
+          chez vous.
+        </p>
+
+        <div className="fade-up fade-up-3 mt-8">
+          <Link
+            to="/catalogue"
+            className="group inline-flex items-center gap-3 bg-white px-7 py-4 text-[13px] font-medium uppercase tracking-[0.1em] text-[#111] transition-colors hover:bg-[#1d4ed8] hover:text-white"
+          >
+            Voir la boutique
+            <span className="transition-transform duration-200 group-hover:translate-x-1">
+              &rarr;
+            </span>
           </Link>
         </div>
       </div>

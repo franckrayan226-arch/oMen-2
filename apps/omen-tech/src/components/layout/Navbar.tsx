@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useCart } from "@/hooks/useCart";
+import { Brand } from "./Brand";
 
 export function Navbar() {
   const items = useCart((s) => s.items);
@@ -9,10 +10,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-[#fafafa]/90 backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 lg:px-10">
-        <Link to="/" className="flex items-center gap-2.5">
-          <img src="/logo.svg" alt="" className="h-8 w-8" />
-          <span className="text-[15px] font-semibold tracking-tight">oMen Tech</span>
-        </Link>
+        <Brand />
 
         <div className="hidden items-center gap-8 md:flex">
           {[
@@ -23,7 +21,7 @@ export function Navbar() {
             <Link
               key={l.to}
               to={l.to}
-              className={`text-[13px] font-normal transition-colors duration-200 ${
+              className={`font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 ${
                 location.pathname === l.to
                   ? "text-[#111]"
                   : "text-[#999] hover:text-[#111]"
@@ -34,7 +32,10 @@ export function Navbar() {
           ))}
         </div>
 
-        <Link to="/panier" className="hidden text-[13px] font-normal text-[#111] md:block">
+        <Link
+          to="/panier"
+          className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-[#111] md:block"
+        >
           Panier
           {count > 0 && (
             <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#111] px-1 text-[10px] font-medium text-white">
