@@ -6,7 +6,7 @@ import { ServiceStrip } from "@/components/home/ServiceStrip";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-[#fafafa]">
       <Navbar />
       <main className="flex-1">
         <Hero />

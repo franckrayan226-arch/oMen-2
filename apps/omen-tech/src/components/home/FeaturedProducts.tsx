@@ -1,97 +1,99 @@
 import { Link } from "react-router-dom";
-import { useProducts, ProductItem } from "@/hooks/useProducts";
+import { useProducts } from "@/hooks/useProducts";
+import { formatPrice } from "@/lib/format";
+import { useFavorites } from "@/hooks/useFavorites";
 
-function ProductCard({ p }: { p: ProductItem }) {
-  const discount = p.compareAt && p.compareAt > p.price
-    ? Math.round(((p.compareAt - p.price) / p.compareAt) * 100)
-    : null;
-
-  return (
-    <Link
-      to={`/produit/${p.slug}`}
-      className="group block rounded-card bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
-    >
-      <div className="relative aspect-square overflow-hidden rounded-t-card bg-[#f5f5f7]">
-        {p.image ? (
-          <img
-            src={p.image}
-            alt={p.name}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d2d2d7" strokeWidth="1">
-              <rect x="2" y="3" width="20" height="14" rx="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
-            </svg>
-          </div>
-        )}
-        {discount && (
-          <span className="absolute left-3 top-3 rounded-full bg-[#ff3b30] px-2.5 py-0.5 text-[11px] font-semibold text-white">
-            -{discount}%
-          </span>
-        )}
-      </div>
-      <div className="p-4">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#86868b]">{p.category}</p>
-        <h3 className="mt-1 text-[14px] font-semibold leading-snug text-[#1d1d1f] line-clamp-2">{p.name}</h3>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-[15px] font-semibold text-[#1d1d1f]">
-            {p.price.toLocaleString("fr-FR")} FCFA
-          </span>
-          {p.compareAt && p.compareAt > p.price && (
-            <span className="text-[13px] text-[#86868b] line-through">
-              {p.compareAt.toLocaleString("fr-FR")} FCFA
-            </span>
-          )}
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function CardSkeleton() {
-  return (
-    <div className="rounded-card bg-white shadow-card">
-      <div className="skeleton aspect-square rounded-t-card" />
-      <div className="p-4 space-y-2">
-        <div className="skeleton h-3 w-16 rounded" />
-        <div className="skeleton h-4 w-3/4 rounded" />
-        <div className="skeleton h-4 w-1/2 rounded" />
-      </div>
-    </div>
-  );
-}
+const OFFSETS = ["lg:mt-0", "lg:mt-12", "lg:mt-6", "lg:mt-16", "lg:mt-2", "lg:mt-10"];
 
 export function FeaturedProducts() {
   const { products, loading } = useProducts();
-  const featured = products.slice(0, 8);
+  const toggle = useFavorites((s) => s.toggle);
+  const isFavorite = useFavorites((s) => s.isFavorite);
+  const featured = products.slice(0, 6);
 
-  if (loading) {
-    return (
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-        <h2 className="text-[24px] font-bold tracking-tight text-[#1d1d1f] sm:text-[32px]">À la une</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
-        </div>
-      </section>
-    );
-  }
-
-  if (!featured.length) return null;
+  if (!loading && featured.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <div className="flex items-end justify-between">
-        <h2 className="text-[24px] font-bold tracking-tight text-[#1d1d1f] sm:text-[32px]">À la une</h2>
-        <Link to="/catalogue" className="text-[13px] font-medium text-[#0071e3] hover:underline">
-          Tout voir →
+    <section className="mx-auto max-w-[1400px] px-5 py-16 lg:px-10 lg:py-24">
+      <div className="flex items-end justify-between border-b border-[#e5e5e5] pb-5">
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Sélection</p>
+          <h2 className="mt-2 text-[28px] font-light tracking-tight lg:text-[34px]">À regarder</h2>
+        </div>
+        <Link
+          to="/catalogue"
+          className="text-[13px] font-medium text-[#555] underline underline-offset-4 transition-colors hover:text-[#111]"
+        >
+          Tout voir
         </Link>
       </div>
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-        {featured.map((p) => <ProductCard key={p.id} p={p} />)}
+
+      <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3">
+        {loading
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className={OFFSETS[i % OFFSETS.length]}>
+                <div className="skeleton aspect-[3/4] w-full" />
+                <div className="mt-3 space-y-2">
+                  <div className="skeleton h-3.5 w-3/4" />
+                  <div className="skeleton h-3 w-1/3" />
+                </div>
+              </div>
+            ))
+          : featured.map((p, i) => (
+              <div key={p.id} className={`group ${OFFSETS[i % OFFSETS.length]}`}>
+                <Link to={`/produit/${p.slug}`} className="block">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-[#f0f0f0]">
+                    {p.image ? (
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-[12px] text-[#999]">
+                        Pas d&rsquo;image
+                      </div>
+                    )}
+                    <div className="absolute right-3 top-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggle({
+                            productId: p.id,
+                            slug: p.slug,
+                            name: p.name,
+                            brand: p.brand,
+                            price: p.price,
+                            image: p.image,
+                          });
+                        }}
+                        className={`flex h-8 w-8 items-center justify-center text-[13px] backdrop-blur-sm transition-colors ${
+                          isFavorite(p.id)
+                            ? "bg-[#111] text-white"
+                            : "bg-white/90 text-[#111] hover:bg-white"
+                        }`}
+                        aria-label="Enregistrer"
+                      >
+                        {isFavorite(p.id) ? "✓" : "+"}
+                      </button>
+                    </div>
+                  </div>
+                </Link>
+                <div className="mt-3.5 flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <Link
+                      to={`/produit/${p.slug}`}
+                      className="block truncate text-[14px] font-normal text-[#111] hover:underline"
+                    >
+                      {p.name}
+                    </Link>
+                    <p className="mt-0.5 truncate text-[12px] text-[#999]">{p.brand}</p>
+                  </div>
+                  <p className="shrink-0 text-[14px] font-medium">{formatPrice(p.price)}</p>
+                </div>
+              </div>
+            ))}
       </div>
     </section>
   );

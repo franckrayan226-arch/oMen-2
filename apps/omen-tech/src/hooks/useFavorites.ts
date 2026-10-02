@@ -15,6 +15,7 @@ interface FavoritesStore {
   addItem: (item: FavoriteItem) => void;
   removeItem: (productId: string) => void;
   isFavorite: (productId: string) => boolean;
+  toggle: (item: FavoriteItem) => void;
 }
 
 export const useFavorites = create<FavoritesStore>()(
@@ -37,6 +38,12 @@ export const useFavorites = create<FavoritesStore>()(
 
       isFavorite: (productId) => {
         return get().items.some((i) => i.productId === productId);
+      },
+
+      toggle: (item) => {
+        const exists = get().items.some((i) => i.productId === item.productId);
+        if (exists) get().removeItem(item.productId);
+        else get().addItem(item);
       },
     }),
     { name: "omen-tech-favorites" }

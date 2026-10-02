@@ -7,25 +7,25 @@ export function Navbar() {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#d2d2d7]/60 bg-white/80 backdrop-blur-xl">
-      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
-            oMen <span className="text-[#0071e3]">Tech</span>
-          </span>
+    <header className="sticky top-0 z-50 bg-[#fafafa]/90 backdrop-blur-md">
+      <nav className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 lg:px-10">
+        <Link to="/" className="text-[15px] font-semibold tracking-tight">
+          oMen Tech
         </Link>
 
-        <div className="hidden items-center gap-7 md:flex">
+        <div className="hidden items-center gap-8 md:flex">
           {[
             { to: "/", label: "Accueil" },
-            { to: "/catalogue", label: "Produits" },
+            { to: "/catalogue", label: "Boutique" },
             { to: "/favoris", label: "Favoris" },
           ].map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className={`text-[13px] font-medium transition-colors duration-200 ${
-                location.pathname === l.to ? "text-[#1d1d1f]" : "text-[#6e6e73] hover:text-[#1d1d1f]"
+              className={`text-[13px] font-normal transition-colors duration-200 ${
+                location.pathname === l.to
+                  ? "text-[#111]"
+                  : "text-[#999] hover:text-[#111]"
               }`}
             >
               {l.label}
@@ -33,25 +33,16 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
-          <Link
-            to="/panier"
-            className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-[#f0f0f2]"
-            aria-label="Panier"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-[#1d1d1f]">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 01-8 0" />
-            </svg>
-            {count > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#0071e3] px-1 text-[10px] font-semibold text-white">
-                {count}
-              </span>
-            )}
-          </Link>
-        </div>
+        <Link to="/panier" className="text-[13px] font-normal text-[#111]">
+          Panier
+          {count > 0 && (
+            <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#111] px-1 text-[10px] font-medium text-white">
+              {count}
+            </span>
+          )}
+        </Link>
       </nav>
+      <div className="h-px bg-[#e5e5e5]" />
     </header>
   );
 }

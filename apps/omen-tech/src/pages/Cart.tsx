@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/lib/format";
 
 export default function Cart() {
   const items = useCart((s) => s.items);
@@ -11,12 +12,15 @@ export default function Cart() {
 
   if (!items.length) {
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-screen flex-col bg-[#fafafa]">
         <Navbar />
         <main className="flex flex-1 items-center justify-center">
-          <div className="text-center px-4">
-            <p className="text-[14px] text-[#6e6e73]">Votre panier est vide</p>
-            <Link to="/catalogue" className="mt-4 inline-flex h-11 items-center rounded-btn bg-[#0071e3] px-6 text-[14px] font-medium text-white transition-colors hover:bg-[#0058b0]">
+          <div className="px-4 text-center">
+            <p className="text-[14px] text-[#999]">Votre panier est vide.</p>
+            <Link
+              to="/catalogue"
+              className="mt-5 inline-block bg-[#111] px-6 py-3 text-[13px] font-medium text-white transition-opacity hover:opacity-80"
+            >
               Voir les produits
             </Link>
           </div>
@@ -27,49 +31,68 @@ export default function Cart() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-[#fafafa]">
       <Navbar />
       <main className="flex-1">
-        <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1d1d1f]">Panier</h1>
+        <div className="mx-auto max-w-[860px] px-5 py-12 lg:px-0 lg:py-16">
+          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Étape 1</p>
+          <h1 className="mt-3 text-[36px] font-light tracking-tight lg:text-[44px]">Panier</h1>
 
-          <div className="mt-8 space-y-4">
+          <div className="mt-10 divide-y divide-[#e5e5e5] border-y border-[#e5e5e5]">
             {items.map((item) => (
-              <div key={`${item.productId}-${item.size}`} className="flex gap-4 rounded-card border border-[#d2d2d7]/60 bg-white p-4">
-                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-[#f5f5f7]">
-                  {item.image && <img src={item.image} alt={item.name} className="h-full w-full object-cover" />}
+              <div key={`${item.productId}-${item.size}`} className="flex gap-4 py-5">
+                <div className="h-20 w-20 shrink-0 overflow-hidden bg-[#f0f0f0]">
+                  {item.image && (
+                    <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                  )}
                 </div>
                 <div className="flex flex-1 flex-col">
-                  <p className="text-[14px] font-semibold text-[#1d1d1f]">{item.name}</p>
-                  <p className="mt-0.5 text-[12px] text-[#86868b]">{item.size && `Taille ${item.size}`}</p>
-                  <p className="mt-1 text-[14px] font-semibold text-[#1d1d1f]">{item.price.toLocaleString("fr-FR")} FCFA</p>
+                  <p className="text-[14px] text-[#111]">{item.name}</p>
+                  <p className="mt-0.5 text-[12px] text-[#999]">
+                    {item.brand}
+                    {item.size ? ` · ${item.size}` : ""}
+                  </p>
+                  <p className="mt-auto pt-2 text-[14px] font-medium">{formatPrice(item.price)}</p>
                 </div>
                 <div className="flex flex-col items-end justify-between">
-                  <button onClick={() => removeItem(item.productId, item.size)} className="text-[12px] text-[#86868b] hover:text-[#ff3b30]">
+                  <button
+                    onClick={() => removeItem(item.productId, item.size)}
+                    className="text-[12px] text-[#999] underline underline-offset-2 transition-colors hover:text-[#111]"
+                  >
                     Retirer
                   </button>
-                  <div className="flex items-center gap-2 rounded-full border border-[#d2d2d7] px-2 py-1">
-                    <button onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1)} className="flex h-6 w-6 items-center justify-center text-[14px] text-[#6e6e73] hover:text-[#1d1d1f]">−</button>
-                    <span className="min-w-5 text-center text-[13px] font-medium">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)} className="flex h-6 w-6 items-center justify-center text-[14px] text-[#6e6e73] hover:text-[#1d1d1f]">+</button>
+                  <div className="flex items-center border border-[#e5e5e5]">
+                    <button
+                      onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1)}
+                      className="flex h-8 w-8 items-center justify-center text-[14px] text-[#555] transition-colors hover:text-[#111]"
+                    >
+                      &minus;
+                    </button>
+                    <span className="min-w-6 text-center text-[13px]">{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)}
+                      className="flex h-8 w-8 items-center justify-center text-[14px] text-[#555] transition-colors hover:text-[#111]"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-8 rounded-card border border-[#d2d2d7]/60 bg-[#fbfbfd] p-6">
-            <div className="flex items-center justify-between">
-              <span className="text-[15px] text-[#6e6e73]">Total</span>
-              <span className="text-[22px] font-bold text-[#1d1d1f]">{total.toLocaleString("fr-FR")} FCFA</span>
+          <div className="mt-8 flex flex-col items-end gap-4">
+            <div className="flex w-full items-baseline justify-between border-b border-[#e5e5e5] pb-4">
+              <span className="text-[14px] text-[#555]">Total</span>
+              <span className="text-[24px] font-light tracking-tight">{formatPrice(total)}</span>
             </div>
             <Link
               to="/checkout"
-              className="mt-5 flex h-12 w-full items-center justify-center rounded-btn bg-[#0071e3] text-[14px] font-medium text-white transition-colors hover:bg-[#0058b0] active:scale-[0.98]"
+              className="w-full bg-[#111] py-4 text-center text-[13px] font-medium text-white transition-opacity hover:opacity-80"
             >
-              Commander
+              Passer la commande
             </Link>
-            <p className="mt-3 text-center text-[12px] text-[#86868b]">Paiement à la livraison</p>
+            <p className="text-[12px] text-[#999]">Paiement à la livraison</p>
           </div>
         </div>
       </main>

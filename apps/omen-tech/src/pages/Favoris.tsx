@@ -2,44 +2,58 @@ import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useFavorites } from "@/hooks/useFavorites";
+import { formatPrice } from "@/lib/format";
 
 export default function Favoris() {
   const { items, removeItem } = useFavorites();
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-[#fafafa]">
       <Navbar />
       <main className="flex-1">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-          <h1 className="text-[28px] font-bold tracking-tight text-[#1d1d1f]">Favoris</h1>
+        <div className="mx-auto max-w-[1400px] px-5 py-12 lg:px-10 lg:py-16">
+          <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">Sélection</p>
+          <h1 className="mt-3 text-[36px] font-light tracking-tight lg:text-[48px]">Favoris</h1>
 
           {!items.length ? (
-            <div className="mt-16 text-center">
-              <p className="text-[14px] text-[#6e6e73]">Aucun favori pour le moment.</p>
-              <Link to="/catalogue" className="mt-4 inline-flex h-11 items-center rounded-btn bg-[#0071e3] px-6 text-[14px] font-medium text-white transition-colors hover:bg-[#0058b0]">
+            <div className="mt-20 text-center">
+              <p className="text-[14px] text-[#999]">Aucun favori pour le moment.</p>
+              <Link
+                to="/catalogue"
+                className="mt-5 inline-block bg-[#111] px-6 py-3 text-[13px] font-medium text-white transition-opacity hover:opacity-80"
+              >
                 Découvrir les produits
               </Link>
             </div>
           ) : (
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+            <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
               {items.map((item) => (
-                <div key={item.productId} className="group relative rounded-card bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+                <div key={item.productId} className="group relative">
                   <Link to={`/produit/${item.slug}`}>
-                    <div className="aspect-square overflow-hidden rounded-t-card bg-[#f5f5f7]">
-                      {item.image && <img src={item.image} alt={item.name} className="h-full w-full object-cover" />}
+                    <div className="relative aspect-[3/4] overflow-hidden bg-[#f0f0f0]">
+                      {item.image && (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                        />
+                      )}
                     </div>
-                    <div className="p-4">
-                      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#86868b]">{item.brand}</p>
-                      <h3 className="mt-1 text-[14px] font-semibold text-[#1d1d1f] line-clamp-2">{item.name}</h3>
-                      <p className="mt-2 text-[15px] font-semibold text-[#1d1d1f]">{item.price.toLocaleString("fr-FR")} FCFA</p>
+                    <div className="mt-3.5 flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-[14px] text-[#111]">{item.name}</p>
+                        <p className="mt-0.5 truncate text-[12px] text-[#999]">{item.brand}</p>
+                      </div>
+                      <p className="shrink-0 text-[14px] font-medium">{formatPrice(item.price)}</p>
                     </div>
                   </Link>
                   <button
                     onClick={() => removeItem(item.productId)}
-                    className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#ff3b30] shadow-sm transition-colors hover:bg-[#ff3b30]/10"
+                    className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center bg-white/90 text-[#111] opacity-0 backdrop-blur-sm transition-opacity duration-200 hover:bg-white group-hover:opacity-100"
                     aria-label="Retirer"
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>
+                    &times;
                   </button>
                 </div>
               ))}

@@ -1,19 +1,19 @@
-const SERVICES = [
-  { icon: "🚚", title: "Livraison rapide", text: "Livré en 24-48h partout au Togo" },
-  { icon: "💳", title: "Paiement à la livraison", text: "Payez à la réception, sans risque" },
-  { icon: "🛡️", title: "Garantie 12 mois", text: "Sur tous nos produits électroniques" },
-  { icon: "🔄", title: "Retour 7 jours", text: "Vous changez d'avis ? On reprend." },
+const ITEMS = [
+  { title: "Livraison rapide", desc: "24 à 48h partout à Lomé." },
+  { title: "Paiement à la livraison", desc: "Payez en espèces à la réception." },
+  { title: "Garantie", desc: "12 mois sur chaque appareil." },
 ];
 
 export function ServiceStrip() {
   return (
-    <section className="border-y border-[#d2d2d7]/60 bg-[#fbfbfd]">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-4">
-        {SERVICES.map((s) => (
-          <div key={s.title} className="text-center">
-            <div className="text-[28px]">{s.icon}</div>
-            <p className="mt-2 text-[13px] font-semibold text-[#1d1d1f]">{s.title}</p>
-            <p className="mt-1 text-[12px] leading-relaxed text-[#6e6e73]">{s.text}</p>
+    <section className="border-y border-[#e5e5e5]">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 divide-y divide-[#e5e5e5] px-5 md:grid-cols-3 md:divide-x md:divide-y-0 lg:px-10">
+        {ITEMS.map((item) => (
+          <div key={item.title} className="py-8 md:px-8 md:py-10 md:first:pl-0 md:last:pr-0">
+            <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[#999]">
+              {item.title}
+            </p>
+            <p className="mt-2 text-[15px] text-[#555]">{item.desc}</p>
           </div>
         ))}
       </div>
