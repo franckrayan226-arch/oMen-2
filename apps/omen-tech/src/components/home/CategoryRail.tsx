@@ -24,12 +24,12 @@ const CATEGORIES = [
   {
     name: "Montres",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790965830/omen-tech/jedqnnvhsla4ij60ej3i.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790971055/omen-tech/tmzlspjbiwgv1famj8mp.jpg",
   },
   {
     name: "Accessoires",
     image:
-      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790965821/omen-tech/ypxsy0692nnbnrfqw6yg.jpg",
+      "https://res.cloudinary.com/ne1zesia/image/upload/f_auto,q_auto,w_600/v1790971060/omen-tech/i5esshqogrqveqgqau3a.jpg",
   },
 ];
 
@@ -54,7 +54,7 @@ export function CategoryRail() {
               className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-            <span className="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-[0.18em] text-white">
+            <span className="absolute bottom-3 left-3 font-graffiti text-[14px] leading-none text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
               {c.name}
             </span>
           </Link>

@@ -1,5 +1,6 @@
 @import "@fontsource-variable/space-grotesk";
 @import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/permanent-marker";
 
 @tailwind base;
 @tailwind components;
@@ -28,6 +29,10 @@ h2,
 h3,
 .font-display {
   font-family: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
+}
+
+.font-graffiti {
+  font-family: "Permanent Marker", "Comic Sans MS", cursive;
 }
 
 img {

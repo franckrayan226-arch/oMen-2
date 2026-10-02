@@ -11,10 +11,10 @@ function Row() {
     <div className="flex shrink-0 items-center">
       {ITEMS.map((item) => (
         <span key={item} className="flex items-center">
-          <span className="px-6 font-display text-[15px] font-semibold uppercase tracking-[-0.01em] text-white sm:text-[17px]">
+          <span className="px-6 font-graffiti text-[17px] leading-none text-white sm:text-[20px]">
             {item}
           </span>
-          <span className="text-[15px] font-semibold text-white/35">/</span>
+          <span className="font-graffiti text-[15px] text-white/40">//</span>
         </span>
       ))}
     </div>
