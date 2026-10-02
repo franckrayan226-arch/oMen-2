@@ -45,16 +45,31 @@ router.post('/create', async (req: Request, res: Response) => {
     const shipping = 0;
     const total = subtotal + shipping;
 
-    // 3. Créer la commande (statut CONFIRMED — paiement à la livraison)
+    // Adresse de livraison : accepte objet OU chaîne JSON, et y ajoute les infos client
+    let addr: any = {};
+    if (typeof shippingAddress === 'string') {
+      try { addr = JSON.parse(shippingAddress); } catch { addr = { street: shippingAddress }; }
+    } else if (shippingAddress && typeof shippingAddress === 'object') {
+      addr = { ...shippingAddress };
+    }
+    if (customer?.name) addr.name = customer.name;
+    if (customer?.phone) addr.phone = customer.phone;
+    if (customer?.email) addr.email = customer.email;
+
+    const reference = `ORD-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
+
+    // 3. Créer la commande (statut PENDING — paiement à la livraison)
     const order = await prisma.order.create({
       data: {
         store: { connect: { id: storeId } },
+        reference,
         subtotal,
         shipping,
         total,
         currency: 'XOF',
         paymentMethod: 'COD',
-        shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : undefined,
+        status: 'PENDING',
+        shippingAddress: Object.keys(addr).length ? JSON.stringify(addr) : undefined,
         notes: customer?.phone ? `Tél: ${customer.phone}${customer.email ? ` — Email: ${customer.email}` : ''}${notes ? ` — ${notes}` : ''}` : notes,
         items: {
           create: orderItems,
@@ -66,7 +81,7 @@ router.post('/create', async (req: Request, res: Response) => {
     return res.json({
       success: true,
       orderId: order.id,
-      reference: `ORD-${order.id.slice(-8).toUpperCase()}`,
+      reference,
       redirectUrl: null,
     });
   } catch (error: any) {

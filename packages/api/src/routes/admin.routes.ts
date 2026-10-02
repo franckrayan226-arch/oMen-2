@@ -7,16 +7,22 @@ const router = Router();
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'omen2026-secret';
 
-// POST /api/admin/login
+// POST /api/admin/login — connexion par nom d'utilisateur OU email
 router.post('/login', async (req: Request, res: Response) => {
   try {
     const { user, pass } = req.body;
 
+    if (!user || !pass) {
+      return res.status(400).json({ error: 'Identifiant et mot de passe requis' });
+    }
+
+    const identifier = String(user).trim();
+
     const admin = await prisma.adminUser.findFirst({
       where: {
         OR: [
-          { email: user },
-          { name: user },
+          { username: { equals: identifier, mode: 'insensitive' } },
+          { email: { equals: identifier, mode: 'insensitive' } },
         ],
       },
     });
@@ -40,6 +46,7 @@ router.post('/login', async (req: Request, res: Response) => {
       token,
       admin: {
         id: admin.id,
+        username: admin.username,
         email: admin.email,
         name: admin.name,
         role: admin.role,
@@ -58,11 +65,18 @@ router.post('/logout', async (_req: Request, res: Response) => {
 // POST /api/admin/create — Créer un admin (à exécuter une seule fois)
 router.post('/create', async (req: Request, res: Response) => {
   try {
-    const { email, password, name, role } = req.body;
+    const { email, password, name, username, role } = req.body;
 
     const existing = await prisma.adminUser.findUnique({ where: { email } });
     if (existing) {
       return res.status(400).json({ error: 'Cet email existe déjà' });
+    }
+
+    if (username) {
+      const taken = await prisma.adminUser.findUnique({ where: { username } });
+      if (taken) {
+        return res.status(400).json({ error: "Ce nom d'utilisateur existe déjà" });
+      }
     }
 
     const hashed = await bcrypt.hash(password, 10);
@@ -72,6 +86,7 @@ router.post('/create', async (req: Request, res: Response) => {
         email,
         password: hashed,
         name,
+        username: username || null,
         role: role || 'ADMIN',
       },
     });
@@ -79,6 +94,7 @@ router.post('/create', async (req: Request, res: Response) => {
     return res.status(201).json({
       id: admin.id,
       email: admin.email,
+      username: admin.username,
       name: admin.name,
       role: admin.role,
     });
@@ -98,7 +114,7 @@ router.get('/me', async (req: Request, res: Response) => {
     const payload = jwt.verify(auth.slice(7), JWT_SECRET) as any;
     const admin = await prisma.adminUser.findUnique({
       where: { id: payload.id },
-      select: { id: true, email: true, name: true, role: true },
+      select: { id: true, username: true, email: true, name: true, role: true },
     });
 
     if (!admin) {

@@ -175,6 +175,7 @@ model OrderItem {
 
 model AdminUser {
   id        String   @id @default(cuid())
+  username  String?  @unique // Nom d'utilisateur pour la connexion
   email     String   @unique
   password  String   // bcrypt hash
   name      String

@@ -77,35 +77,27 @@ export interface ProductFormData {
 }
 
 export interface OrderItem {
-  site: SiteKey | null;
-  productId: string;
-  slug: string;
+  productId?: string;
   name: string;
-  brand: string | null;
   price: number;
-  qty: number;
-  size: string | null;
-  variant: string | null;
-  color: string | null;
-  image: string | null;
+  quantity: number;
 }
 
 export interface Order {
   id: string;
+  reference?: string | null;
   createdAt: string;
-  status: string;
-  customer: {
-    name: string;
-    phone: string;
-    email: string | null;
-    city: string;
-    address: string;
-    country: string | null;
-  };
-  payment: string;
-  accountEmail: string | null;
-  items: OrderItem[];
+  status: string; // PENDING | PROCESSING | SHIPPED | DELIVERED | CANCELLED | REFUNDED
+  subtotal?: number;
+  shipping?: number;
   total: number;
+  currency?: string;
+  paymentMethod?: string | null;
+  shippingAddress?: string | null; // JSON: { name, phone, email, street, city, country }
+  notes?: string | null;
+  customer?: { name?: string | null; phone?: string | null } | null;
+  store?: { name: string; displayName: string } | null;
+  items: OrderItem[];
 }
 
 // Store config

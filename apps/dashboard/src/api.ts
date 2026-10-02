@@ -62,7 +62,7 @@ export const api = {
   },
 
   product: (slug: string) =>
-    fetch(`${API}/api/products/${slug}`).then(handle).then((d) => d.product as ProductDetailAlias),
+    fetch(`${API}/api/products/${slug}`).then(handle) as Promise<ProductDetailAlias>,
 
   productAdmin: (id: string) =>
     fetch(`${API}/api/products/admin/${id}`).then(handle).then((d) => d as ProductDetailAlias),
@@ -98,10 +98,10 @@ export const api = {
       body: JSON.stringify({ url }),
     }).then(handle),
 
-  orders: () => fetch(`${API}/api/orders`, { headers: authHeaders() }).then(handle).then((d) => d.orders as OrderAlias[]),
+  orders: () => fetch(`${API}/api/orders`, { headers: authHeaders() }).then(handle).then((d) => d.data as OrderAlias[]),
 
   setOrderStatus: (id: string, status: string) =>
-    fetch(`${API}/api/orders/${id}`, { method: "PATCH", headers: { ...jsonHeaders() }, body: JSON.stringify({ status }) }).then(handle),
+    fetch(`${API}/api/orders/${id}/status`, { method: "PATCH", headers: { ...jsonHeaders() }, body: JSON.stringify({ status }) }).then(handle),
 };
 
 // aliases pour éviter les imports circulaires de types

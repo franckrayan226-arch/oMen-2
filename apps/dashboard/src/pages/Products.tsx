@@ -6,6 +6,12 @@ import { fmt } from "@/lib/format";
 
 type Tab = "all" | "shoes" | "wellness" | "tech";
 
+const SITE_LABEL: Record<string, string> = {
+  shoes: "Sneaker",
+  wellness: "Wellness",
+  tech: "Tech",
+};
+
 export default function ProductsPage() {
   const [items, setItems] = useState<ProductCard[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,11 +22,25 @@ export default function ProductsPage() {
 
   const load = () => {
     setLoading(true);
-    api.products()
+    const base = (import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "");
+    const resolveUrl = (u?: string) => (!u ? "" : u.startsWith("http") ? u : `${base}${u}`);
+    api
+      .products()
       .then((raw) => {
         const withSite = raw.map((p: any) => ({
           ...p,
-          site: p.storeId === "omen-shoes" ? "shoes" : p.storeId === "omen-tech" ? "tech" : "wellness",
+          site:
+            p.storeId === "omen-shoes"
+              ? "shoes"
+              : p.storeId === "omen-tech"
+              ? "tech"
+              : "wellness",
+          image:
+            resolveUrl(p.images?.[0]?.url) ||
+            resolveUrl(p.colors?.[0]?.images?.[0]?.url) ||
+            "",
+          brand: p.brand || p.category || "",
+          colorsCount: p.colors?.length || 0,
         }));
         setItems(withSite);
       })
@@ -34,7 +54,7 @@ export default function ProductsPage() {
     return items.filter(
       (p) =>
         (tab === "all" || p.site === tab) &&
-        (!s || p.name.toLowerCase().includes(s) || p.brand.toLowerCase().includes(s))
+        (!s || p.name.toLowerCase().includes(s) || (p.brand || "").toLowerCase().includes(s))
     );
   }, [items, tab, q]);
 
@@ -51,7 +71,9 @@ export default function ProductsPage() {
   const toggleActive = async (p: ProductCard) => {
     try {
       await api.updateProduct(p.id, { active: !p.active });
-      setItems((xs) => xs.map((x) => (x.id === p.id ? { ...x, active: !p.active } : x)));
+      setItems((xs) =>
+        xs.map((x) => (x.id === p.id ? { ...x, active: !p.active } : x))
+      );
     } catch (e: any) {
       setError(e.message);
     }
@@ -65,21 +87,42 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      {/* Titre desktop */}
+      <div className="mb-5 hidden items-end justify-between gap-3 sm:flex">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Produits</h1>
-          <p className="mt-0.5 text-[12.5px] text-[#777]">Les trois boutiques — sneaker, bien-être et tech.</p>
+          <h1 className="text-[24px] font-extrabold tracking-tight">Produits</h1>
+          <p className="mt-0.5 text-[13px] text-[#777]">
+            Sneaker, bien-être et tech — au même endroit.
+          </p>
         </div>
-        <Link
-          to="/produits/nouveau"
-          className="rounded-xl bg-[#1d4ed8] px-4 py-2.5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-[#1e40af] active:scale-[0.98]"
-        >
-          + Ajouter un article
+        <Link to="/produits/nouveau" className="btn btn-primary btn-sm">
+          + Ajouter un produit
         </Link>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-2">
+      {/* Recherche */}
+      <div className="relative">
+        <svg
+          className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#999]"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+        </svg>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Chercher un produit…"
+          className="input pl-12"
+        />
+      </div>
+
+      {/* Filtres boutiques */}
+      <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
         {(
           [
             ["all", `Tous (${counts.all})`],
@@ -91,102 +134,135 @@ export default function ProductsPage() {
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`rounded-full px-4 py-2 text-[12px] font-semibold transition ${
-              tab === key ? "bg-[#111] text-white" : "bg-white text-[#444] ring-1 ring-black/[0.08] hover:bg-black/[0.03]"
-            }`}
+            className={`chip ${tab === key ? "chip-active" : ""}`}
           >
             {label}
           </button>
         ))}
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Rechercher un article, une marque…"
-          className="ml-auto w-full rounded-xl border border-black/10 bg-white px-3.5 py-2.5 text-[13px] outline-none transition focus:border-[#1d4ed8] sm:w-72"
-        />
       </div>
 
-      {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-[13px] text-red-600 ring-1 ring-red-100">{error}</p>}
+      {error && (
+        <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-[14px] text-red-600">{error}</p>
+      )}
 
-      <div className="mt-5 overflow-hidden rounded-2xl bg-white ring-1 ring-black/[0.06]">
+      {/* Liste */}
+      <div className="mt-5 space-y-3">
         {loading ? (
-          <div className="divide-y divide-black/[0.05]">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 p-4">
-                <div className="skeleton h-14 w-14 rounded-xl" />
-                <div className="flex-1 space-y-2">
-                  <div className="skeleton h-3.5 w-1/3 rounded" />
-                  <div className="skeleton h-3 w-1/5 rounded" />
-                </div>
+          [...Array(5)].map((_, i) => (
+            <div key={i} className="card flex items-center gap-4 p-4">
+              <div className="skeleton h-16 w-16 rounded-2xl" />
+              <div className="flex-1 space-y-2">
+                <div className="skeleton h-4 w-1/3 rounded" />
+                <div className="skeleton h-3 w-1/4 rounded" />
               </div>
-            ))}
-          </div>
+            </div>
+          ))
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-[13px] text-[#888]">Aucun article trouvé.</div>
+          <div className="card p-10 text-center">
+            <p className="text-[15px] text-[#888]">Aucun produit trouvé.</p>
+            <Link to="/produits/nouveau" className="btn btn-primary mt-5 inline-flex">
+              + Ajouter un produit
+            </Link>
+          </div>
         ) : (
-          <ul className="divide-y divide-black/[0.05]">
-            {filtered.map((p) => (
-              <li key={p.id} className="animate-fade-in-up flex flex-wrap items-center gap-3 p-3.5 sm:gap-4 sm:p-4">
+          filtered.map((p) => (
+            <div key={p.id} className="card animate-fade-in-up p-4">
+              <div className="flex items-start gap-3.5">
                 <img
                   src={p.image || undefined}
                   alt=""
-                  className="h-14 w-14 shrink-0 rounded-xl bg-[#f1f1ef] object-cover ring-1 ring-black/[0.06]"
+                  className="h-16 w-16 shrink-0 rounded-2xl bg-[#f1f1ef] object-cover ring-1 ring-black/[0.06]"
                   onError={(e) => ((e.target as HTMLImageElement).style.visibility = "hidden")}
                 />
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-black/[0.05] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#666]">
-                      {p.site === "shoes" ? "Sneaker" : p.site === "tech" ? "Tech" : "Wellness"}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="rounded-md bg-black/[0.06] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#666]">
+                      {SITE_LABEL[p.site]}
                     </span>
-                    {p.badge && <span className="rounded-md bg-blue-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#1d4ed8]">{p.badge}</span>}
+                    {p.badge && (
+                      <span className="rounded-md bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">
+                        {p.badge}
+                      </span>
+                    )}
                   </div>
-                  <p className="mt-1 truncate text-[14px] font-semibold">{p.name}</p>
-                  <p className="text-[11.5px] text-[#888]">
-                    {p.brand} · {fmt(p.price)}
-                    {p.site === "shoes" ? ` · ${p.colorsCount} coloris` : p.category ? ` · ${p.category}` : ""}
-                  </p>
+                  <p className="mt-1 truncate text-[16px] font-semibold leading-snug">{p.name}</p>
+                  <p className="mt-0.5 text-[13.5px] text-[#888]">{fmt(p.price)}</p>
                 </div>
+              </div>
 
+              {/* Actions */}
+              <div className="mt-3.5 flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => toggleActive(p)}
-                  title={p.active ? "Visible sur le site — cliquer pour masquer" : "Masqué — cliquer pour publier"}
-                  className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-semibold ring-1 transition ${
-                    p.active ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : "bg-gray-50 text-gray-400 ring-gray-200"
+                  className={`btn btn-sm flex-1 ${
+                    p.active ? "btn-outline text-emerald-700" : "btn-outline"
                   }`}
+                  title={
+                    p.active
+                      ? "Visible sur le site — toucher pour masquer"
+                      : "Masqué — toucher pour mettre en ligne"
+                  }
                 >
-                  <span className={`h-1.5 w-1.5 rounded-full ${p.active ? "bg-emerald-500" : "bg-gray-300"}`} />
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      p.active ? "bg-emerald-500" : "bg-gray-300"
+                    }`}
+                  />
                   {p.active ? "En ligne" : "Masqué"}
                 </button>
 
                 <Link
                   to={`/produits/${p.id}/edition`}
-                  className="rounded-xl px-3.5 py-2 text-[12.5px] font-semibold text-[#1d4ed8] transition hover:bg-blue-50"
+                  className="btn btn-sm btn-primary flex-1"
                 >
                   Modifier
                 </Link>
 
                 {confirmId === p.id ? (
-                  <span className="flex items-center gap-1">
-                    <button onClick={() => remove(p.id)} className="rounded-xl bg-red-600 px-3 py-2 text-[12.5px] font-semibold text-white">
-                      Supprimer
+                  <div className="flex w-full items-center gap-2">
+                    <button
+                      onClick={() => remove(p.id)}
+                      className="btn btn-sm btn-danger flex-1 bg-red-600 text-white"
+                      style={{ borderColor: "#dc2626" }}
+                    >
+                      Oui, supprimer
                     </button>
-                    <button onClick={() => setConfirmId(null)} className="rounded-xl px-2.5 py-2 text-[12.5px] text-[#888]">
+                    <button
+                      onClick={() => setConfirmId(null)}
+                      className="btn btn-sm btn-outline flex-1"
+                    >
                       Annuler
                     </button>
-                  </span>
+                  </div>
                 ) : (
                   <button
                     onClick={() => setConfirmId(p.id)}
-                    className="rounded-xl px-3 py-2 text-[12.5px] font-medium text-[#b91c1c] transition hover:bg-red-50"
+                    className="btn btn-sm btn-outline px-3 text-[#b91c1c]"
+                    aria-label={`Supprimer ${p.name}`}
                   >
-                    Supprimer
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18" />
+                      <path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2" />
+                      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                    </svg>
                   </button>
                 )}
-              </li>
-            ))}
-          </ul>
+              </div>
+            </div>
+          ))
         )}
       </div>
+
+      {/* Bouton + (mobile, au-dessus des onglets) */}
+      <Link
+        to="/produits/nouveau"
+        className="fixed bottom-24 right-4 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[#1d4ed8] text-white shadow-[0_8px_24px_rgba(29,78,216,0.4)] transition active:scale-95 sm:hidden"
+        aria-label="Ajouter un produit"
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+      </Link>
     </div>
   );
 }
