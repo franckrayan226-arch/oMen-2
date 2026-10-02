@@ -9,7 +9,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Brand />
             <p className="mt-3 max-w-[260px] text-[13px] leading-relaxed text-[#999]">
-              Du technologique de consommation, sÃ©lectionnÃ© avec soin.
+              Du technologique de consommation, sélectionné avec soin.
             </p>
           </div>
 
@@ -38,7 +38,7 @@ export function Footer() {
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#999]">Infos</p>
             <ul className="mt-4 space-y-2.5 text-[13px] text-[#555]">
               <li>Livraison Togo &amp; Burkina Faso</li>
-              <li>Paiement Ã  la livraison</li>
+              <li>Paiement à la livraison</li>
               <li>Garantie 12 mois</li>
             </ul>
           </div>
@@ -46,7 +46,7 @@ export function Footer() {
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#999]">Contact</p>
             <ul className="mt-4 space-y-2.5 text-[13px] text-[#555]">
-              <li>LomÃ© (TG) &amp; Ouagadougou (BF)</li>
+              <li>Lomé (TG) &amp; Ouagadougou (BF)</li>
               <li>contact@omentech.tg</li>
             </ul>
           </div>
