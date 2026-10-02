@@ -60,10 +60,11 @@ export function useProduct(slug: string) {
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
+    setProduct(null);
     fetch(`${API}/api/products/${slug}`)
       .then((r) => r.json())
-      .then((d) => setProduct(d))
-      .catch(() => {})
+      .then((d) => setProduct(d && d.id && d.slug ? d : null))
+      .catch(() => setProduct(null))
       .finally(() => setLoading(false));
   }, [slug]);
 

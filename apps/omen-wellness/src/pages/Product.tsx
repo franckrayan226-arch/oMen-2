@@ -27,8 +27,9 @@ export default function Product() {
   const { items: favItems, addItem: addFav, removeItem: removeFav } = useFavorites();
   const navigate = useNavigate();
 
-  const staticProduct = getProduct(slug || "") || getProduct("minoxidil-5");
-  const product = apiProduct ? {
+  const staticMatch = getProduct(slug || "");
+  const staticProduct = staticMatch || getProduct("minoxidil-5")!;
+  const base = apiProduct?.id ? {
     id: apiProduct.id,
     slug: apiProduct.slug,
     name: apiProduct.name,
@@ -37,20 +38,25 @@ export default function Product() {
     price: apiProduct.price,
     compareAt: apiProduct.compareAt,
     badge: apiProduct.badge || null,
-    image: resolveImage(apiProduct.images?.[0]?.url) || resolveImage(apiProduct.colors?.[0]?.images?.[0]?.url) || staticProduct!.image,
-    description: apiProduct.description || staticProduct!.description,
-    ritual: staticProduct!.ritual,
-    actives: staticProduct!.actives,
+    image: resolveImage(apiProduct.images?.[0]?.url) || resolveImage(apiProduct.colors?.[0]?.images?.[0]?.url) || "",
+    description: apiProduct.description || staticMatch?.description || "",
+    ritual: staticMatch?.ritual || [],
+    actives: staticMatch?.actives || "",
     variants: apiProduct.variants?.length
-      ? apiProduct.variants.map((v: any) => ({ label: v.size, price: v.price || apiProduct.price, compareAt: v.compareAt }))
-      : staticProduct!.variants,
-  } : (loading ? { ...staticProduct!, image: "", variants: [] } : staticProduct!);
+      ? apiProduct.variants.map((v: any) => ({ label: v.size || v.label || "Format", price: v.price || apiProduct.price, compareAt: v.compareAt }))
+      : [],
+  } : (loading ? { ...staticProduct, image: "", variants: staticProduct.variants } : staticProduct);
+  const product = { ...base, variants: base.variants.length ? base.variants : [{ label: "Format unique", price: base.price }] };
 
   const isFav = favItems.some((i) => i.productId === product.id);
 
   useEffect(() => {
     setSelectedVariant(null);
   }, [slug]);
+
+  useEffect(() => {
+    if (product.variants.length === 1) setSelectedVariant((s) => s ?? 0);
+  }, [product.variants.length]);
 
   const handleAdd = () => {
     if (selectedVariant === null) {
@@ -73,7 +79,7 @@ export default function Product() {
 
   const toggleFav = () => {
     if (isFav) removeFav(product.id);
-    else addFav({ productId: product.id, slug: product.slug, name: product.name, brand: product.brand, price: product.variants[0].price, image: product.image });
+    else addFav({ productId: product.id, slug: product.slug, name: product.name, brand: product.brand, price: product.variants[0]?.price ?? product.price, image: product.image });
   };
 
   return (
@@ -93,7 +99,11 @@ export default function Product() {
             <Reveal>
               <div className="glass overflow-hidden rounded-3xl">
                 <div className="relative overflow-hidden rounded-[22px] bg-[#ece4d2] m-1.5">
-                  <img src={product.image} alt={product.name} className="aspect-[4/5] w-full object-cover" />
+                  {product.image ? (
+                    <img src={product.image} alt={product.name} className="aspect-[4/5] w-full object-cover" />
+                  ) : (
+                    <div className="aspect-[4/5] w-full animate-pulse bg-[#e6dcc8]" />
+                  )}
                   {product.badge && <span className="tag-glass tag-glass-dark absolute left-3 top-3">{product.badge}</span>}
                 </div>
                 <div className="flex items-center justify-between px-5 pb-4 pt-1">
@@ -113,9 +123,9 @@ export default function Product() {
 
                 <div className="mt-5 flex items-baseline gap-3 border-t border-white/50 pt-5">
                   <span className="text-[20px] font-bold text-[#17211a] sm:text-[24px]">
-                    {(selectedVariant !== null ? product.variants[selectedVariant].price : product.variants[0].price).toLocaleString("fr-FR")} F
+                    {((selectedVariant !== null ? product.variants[selectedVariant]?.price : product.variants[0]?.price) ?? product.price).toLocaleString("fr-FR")} F
                   </span>
-                  {selectedVariant !== null && product.variants[selectedVariant].compareAt && (
+                  {selectedVariant !== null && product.variants[selectedVariant]?.compareAt && (
                     <span className="text-[12px] text-[#17211a]/45 line-through">{product.variants[selectedVariant].compareAt!.toLocaleString("fr-FR")} F</span>
                   )}
                   {selectedVariant === null && <span className="text-[9.5px] uppercase tracking-[0.16em] text-[#17211a]/45">— selon format</span>}
@@ -161,8 +171,10 @@ export default function Product() {
             </Reveal>
           </div>
 
+          {(product.ritual.length > 0 || product.actives) && (
           <div className="mt-6 sm:mt-10">
             <div className="grid gap-3 sm:grid-cols-2">
+              {product.ritual.length > 0 && (
               <Reveal>
                 <div className="glass h-full rounded-3xl p-6 sm:p-9">
                   <p className="label-mono text-[9px] text-[#b4552d]">Protocole</p>
@@ -177,6 +189,8 @@ export default function Product() {
                   </ol>
                 </div>
               </Reveal>
+              )}
+              {product.actives && (
               <Reveal delay={120}>
                 <div className="glass-deep h-full rounded-3xl p-6 sm:p-9">
                   <p className="label-mono text-[9px] text-[#e0a37f]">Composition</p>
@@ -188,13 +202,15 @@ export default function Product() {
                   </div>
                 </div>
               </Reveal>
+              )}
             </div>
           </div>
+          )}
         </div>
       </main>
       <Footer />
       <MobileNav />
-      <StickyCart productId={product.id} slug={product.slug} name={product.name} brand={product.brand} price={product.variants[selectedVariant ?? 0].price} image={product.image} variant={selectedVariant === null ? null : product.variants[selectedVariant].label} onNeedVariant={() => setShowVariants(true)} />
+      <StickyCart productId={product.id} slug={product.slug} name={product.name} brand={product.brand} price={product.variants[selectedVariant ?? 0]?.price ?? product.price} image={product.image} variant={selectedVariant === null ? null : product.variants[selectedVariant]?.label ?? null} onNeedVariant={() => setShowVariants(true)} />
     </div>
   );
 }
