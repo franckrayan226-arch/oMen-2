@@ -6,6 +6,7 @@ const STORE_ID = "omen-tech";
 function resolveImage(url: string | undefined): string {
   if (!url) return "";
   if (url.startsWith("http")) return url;
+  if (url.startsWith("/tech/")) return url; // image locale du front
   return `${API}${url}`;
 }
 

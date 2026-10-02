@@ -6,8 +6,11 @@ export function Footer() {
       <div className="mx-auto max-w-[1400px] px-5 py-16 lg:px-10">
         <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <p className="text-[15px] font-semibold tracking-tight">oMen Tech</p>
-            <p className="mt-3 max-w-[240px] text-[13px] leading-relaxed text-[#999]">
+            <div className="flex items-center gap-2.5">
+              <img src="/logo.svg" alt="" className="h-8 w-8" />
+              <p className="text-[15px] font-semibold tracking-tight">oMen Tech</p>
+            </div>
+            <p className="mt-3 max-w-[260px] text-[13px] leading-relaxed text-[#999]">
               Du technologique de consommation, sélectionné avec soin.
             </p>
           </div>
@@ -36,7 +39,7 @@ export function Footer() {
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#999]">Infos</p>
             <ul className="mt-4 space-y-2.5 text-[13px] text-[#555]">
-              <li>Livraison 24-48h</li>
+              <li>Livraison Togo &amp; Burkina Faso</li>
               <li>Paiement à la livraison</li>
               <li>Garantie 12 mois</li>
             </ul>
@@ -45,7 +48,7 @@ export function Footer() {
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#999]">Contact</p>
             <ul className="mt-4 space-y-2.5 text-[13px] text-[#555]">
-              <li>Lomé, Togo</li>
+              <li>Lomé (TG) &amp; Ouagadougou (BF)</li>
               <li>contact@omentech.tg</li>
             </ul>
           </div>

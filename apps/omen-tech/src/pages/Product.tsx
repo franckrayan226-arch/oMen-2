@@ -59,9 +59,12 @@ export default function Product() {
     );
   }
 
+  const resolve = (u?: string) =>
+    !u ? "" : u.startsWith("http") || u.startsWith("/tech/") ? u : `${(import.meta.env.VITE_API_URL || "https://o-men-backend.vercel.app").replace(/\/+$/, "")}${u}`;
+
   const images: string[] = [
-    ...(product.images?.map((i: any) => i.url) || []),
-    ...(product.colors?.flatMap((c: any) => c.images?.map((i: any) => i.url) || []) || []),
+    ...(product.images?.map((i: any) => resolve(i.url)) || []),
+    ...(product.colors?.flatMap((c: any) => c.images?.map((i: any) => resolve(i.url)) || []) || []),
   ].filter(Boolean);
   const mainImage = images[selectedImage] || images[0] || "";
   const isFav = favs.some((f) => f.productId === product.id);

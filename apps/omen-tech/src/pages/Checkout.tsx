@@ -6,7 +6,18 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/format";
 
-const CITIES = ["Lomé", "Kara", "Sokodé", "Kpalimé", "Atakpamé", "Dédougou", "Bobo-Dioulasso", "Ouagadougou"];
+const CITIES: { name: string; country: string }[] = [
+  { name: "Lomé", country: "Togo" },
+  { name: "Kara", country: "Togo" },
+  { name: "Sokodé", country: "Togo" },
+  { name: "Kpalimé", country: "Togo" },
+  { name: "Atakpamé", country: "Togo" },
+  { name: "Ouagadougou", country: "Burkina Faso" },
+  { name: "Bobo-Dioulasso", country: "Burkina Faso" },
+  { name: "Koudougou", country: "Burkina Faso" },
+  { name: "Banfora", country: "Burkina Faso" },
+  { name: "Ouahigouya", country: "Burkina Faso" },
+];
 
 const inputClass =
   "mt-1.5 h-12 w-full border border-[#e5e5e5] bg-white px-4 text-[14px] text-[#111] outline-none transition-colors placeholder:text-[#999] focus:border-[#111]";
@@ -34,7 +45,11 @@ export default function Checkout() {
             storeId: import.meta.env.VITE_STORE_ID_TECH,
             items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
             customer: { name: form.name, phone: form.phone, email: form.email },
-            shippingAddress: { street: form.address, city: form.city, country: "Togo" },
+            shippingAddress: {
+              street: form.address,
+              city: form.city,
+              country: CITIES.find((c) => c.name === form.city)?.country || "Togo",
+            },
           }),
         }
       );
@@ -127,8 +142,8 @@ export default function Checkout() {
                 className={inputClass}
               >
                 {CITIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                  <option key={c.name} value={c.name}>
+                    {c.name} ({c.country})
                   </option>
                 ))}
               </select>

@@ -1,5 +1,5 @@
 const ITEMS = [
-  { title: "Livraison rapide", desc: "24 à 48h partout à Lomé." },
+  { title: "Livraison rapide", desc: "24 à 48h au Togo et au Burkina Faso." },
   { title: "Paiement à la livraison", desc: "Payez en espèces à la réception." },
   { title: "Garantie", desc: "12 mois sur chaque appareil." },
 ];

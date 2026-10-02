@@ -9,8 +9,9 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-[#fafafa]/90 backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 lg:px-10">
-        <Link to="/" className="text-[15px] font-semibold tracking-tight">
-          oMen Tech
+        <Link to="/" className="flex items-center gap-2.5">
+          <img src="/logo.svg" alt="" className="h-8 w-8" />
+          <span className="text-[15px] font-semibold tracking-tight">oMen Tech</span>
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
