@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { useProduct } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -18,7 +19,7 @@ export default function Product() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#fafafa]">
+      <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
         <Navbar />
         <main className="mx-auto w-full max-w-[1400px] px-5 py-10 lg:px-10">
           <div className="grid gap-10 lg:grid-cols-2">
@@ -32,13 +33,14 @@ export default function Product() {
           </div>
         </main>
         <Footer />
+      <BottomNav />
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#fafafa]">
+      <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
         <Navbar />
         <main className="flex flex-1 items-center justify-center">
           <div className="text-center">
@@ -52,6 +54,7 @@ export default function Product() {
           </div>
         </main>
         <Footer />
+      <BottomNav />
       </div>
     );
   }
@@ -93,7 +96,7 @@ export default function Product() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafafa]">
+    <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
       <Navbar />
       <main className="flex-1">
         <div className="mx-auto max-w-[1400px] px-5 py-8 lg:px-10 lg:py-12">
@@ -228,6 +231,7 @@ export default function Product() {
         </div>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }

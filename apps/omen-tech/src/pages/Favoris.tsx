@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { useFavorites } from "@/hooks/useFavorites";
 import { formatPrice } from "@/lib/format";
 
@@ -8,7 +9,7 @@ export default function Favoris() {
   const { items, removeItem } = useFavorites();
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafafa]">
+    <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
       <Navbar />
       <main className="flex-1">
         <div className="mx-auto max-w-[1400px] px-5 py-12 lg:px-10 lg:py-16">
@@ -62,6 +63,7 @@ export default function Favoris() {
         </div>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }

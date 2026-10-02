@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/format";
 
@@ -12,7 +13,7 @@ export default function Cart() {
 
   if (!items.length) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#fafafa]">
+      <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
         <Navbar />
         <main className="flex flex-1 items-center justify-center">
           <div className="px-4 text-center">
@@ -26,12 +27,13 @@ export default function Cart() {
           </div>
         </main>
         <Footer />
+      <BottomNav />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafafa]">
+    <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
       <Navbar />
       <main className="flex-1">
         <div className="mx-auto max-w-[860px] px-5 py-12 lg:px-0 lg:py-16">
@@ -97,6 +99,7 @@ export default function Cart() {
         </div>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }

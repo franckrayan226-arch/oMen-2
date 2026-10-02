@@ -1,13 +1,14 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 export default function OrderSuccess() {
   const [params] = useSearchParams();
   const ref = params.get("ref");
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafafa]">
+    <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
       <Navbar />
       <main className="flex flex-1 items-center justify-center px-5">
         <div className="max-w-md text-center">
@@ -42,6 +43,7 @@ export default function OrderSuccess() {
         </div>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }

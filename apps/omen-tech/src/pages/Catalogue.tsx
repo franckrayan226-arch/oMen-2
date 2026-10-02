@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { useProducts, ProductItem } from "@/hooks/useProducts";
 import { formatPrice } from "@/lib/format";
 
@@ -63,7 +64,7 @@ export default function Catalogue() {
   }, [products, cat]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafafa]">
+    <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
       <Navbar />
       <main className="flex-1">
         <div className="mx-auto max-w-[1400px] px-5 py-12 lg:px-10 lg:py-16">
@@ -114,6 +115,7 @@ export default function Catalogue() {
         </div>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }

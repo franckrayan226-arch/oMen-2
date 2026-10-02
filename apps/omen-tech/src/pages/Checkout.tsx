@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/format";
 
@@ -33,7 +34,7 @@ export default function Checkout() {
             storeId: import.meta.env.VITE_STORE_ID_TECH,
             items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
             customer: { name: form.name, phone: form.phone, email: form.email },
-            shippingAddress: JSON.stringify({ street: form.address, city: form.city }),
+            shippingAddress: { street: form.address, city: form.city, country: "Togo" },
           }),
         }
       );
@@ -50,7 +51,7 @@ export default function Checkout() {
 
   if (!items.length) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#fafafa]">
+      <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
         <Navbar />
         <main className="flex flex-1 items-center justify-center">
           <div className="px-4 text-center">
@@ -64,12 +65,13 @@ export default function Checkout() {
           </div>
         </main>
         <Footer />
+      <BottomNav />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafafa]">
+    <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
       <Navbar />
       <main className="flex-1">
         <div className="mx-auto max-w-[560px] px-5 py-12 lg:py-16">
@@ -159,6 +161,7 @@ export default function Checkout() {
         </div>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }
