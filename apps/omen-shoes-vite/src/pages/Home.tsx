@@ -1,4 +1,5 @@
 import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { InfluencerCta } from "@/components/home/InfluencerCta";
 import { FeaturedGrid } from "@/components/home/FeaturedGrid";
 import { LifestyleBento } from "@/components/home/LifestyleBento";
 import { BrandMarquee } from "@/components/home/BrandMarquee";
@@ -17,6 +18,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
           <HeroCarousel />
         </div>
+        <InfluencerCta />
         <FeaturedGrid />
         <LifestyleBento />
         <BrandMarquee />
