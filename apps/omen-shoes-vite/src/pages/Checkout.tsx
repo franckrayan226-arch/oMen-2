@@ -96,8 +96,8 @@ export default function Checkout() {
     setCodeError(null);
   };
 
-  const omUssd = `*1441*2*1*${PAY_NUMBER}*${finalTotal}#`;
-  const moovUssd = `*55*2*1*${MOOV_NUMBER}*${finalTotal}#`;
+  const omUssd = `*144*2*1*${PAY_NUMBER}*${finalTotal}#`;
+  const moovUssd = `*555*2*1*${MOOV_NUMBER}*${finalTotal}#`;
 
   const locate = () => {
     if (!navigator.geolocation) {

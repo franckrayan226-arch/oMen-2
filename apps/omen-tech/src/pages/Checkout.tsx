@@ -48,8 +48,8 @@ export default function Checkout() {
   const [proofUploading, setProofUploading] = useState(false);
   const [proofError, setProofError] = useState<string | null>(null);
 
-  const omUssd = `*1441*2*1*${PAY_NUMBER}*${total}#`;
-  const moovUssd = `*55*2*1*${MOOV_NUMBER}*${total}#`;
+  const omUssd = `*144*2*1*${PAY_NUMBER}*${total}#`;
+  const moovUssd = `*555*2*1*${MOOV_NUMBER}*${total}#`;
 
   const locate = () => {
     if (!navigator.geolocation) {

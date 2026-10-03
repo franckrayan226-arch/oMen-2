@@ -129,17 +129,9 @@ export default function Catalogue() {
             Tout le catalogue
           </h1>
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-[#e5e5e5] pb-4">
+          <div className="mt-8 flex flex-wrap items-center gap-2">
             {tabs.map((c) => (
-              <button
-                key={c}
-                onClick={() => selectCat(c)}
-                className={`font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 ${
-                  cat === c
-                    ? "font-medium text-[#111]"
-                    : "text-[#999] hover:text-[#555]"
-                }`}
-              >
+              <button key={c} onClick={() => selectCat(c)} className={brandPillClass(cat === c)}>
                 {c}
               </button>
             ))}
