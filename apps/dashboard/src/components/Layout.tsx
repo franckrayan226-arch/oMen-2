@@ -1,23 +1,52 @@
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { api } from "@/api";
 
 const NAV = [
   { to: "/produits", label: "Produits", icon: IconBox },
+  { to: "/categories", label: "Catégories", icon: IconTag },
   { to: "/commandes", label: "Commandes", icon: IconBag },
+  { to: "/partenaires", label: "Partenaires", icon: IconUsers },
 ];
 
 export default function Layout() {
   const { logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    let alive = true;
+    const load = () =>
+      api
+        .notifications()
+        .then((r) => {
+          if (alive) setUnread(r.unreadCount);
+        })
+        .catch(() => {});
+    load();
+    const onUpdated = () => load();
+    const interval = window.setInterval(load, 60000);
+    window.addEventListener("omen-notif-updated", onUpdated);
+    return () => {
+      alive = false;
+      window.clearInterval(interval);
+      window.removeEventListener("omen-notif-updated", onUpdated);
+    };
+  }, [location.pathname]);
 
   const pageTitle =
     location.pathname.startsWith("/produits") && location.pathname !== "/produits"
       ? location.pathname.includes("nouveau")
         ? "Nouveau produit"
         : "Modifier"
+      : location.pathname.startsWith("/categories")
+      ? "Catégories"
       : location.pathname.startsWith("/commandes")
       ? "Commandes"
+      : location.pathname.startsWith("/partenaires")
+      ? "Partenaires"
       : "Produits";
 
   return (
@@ -42,6 +71,11 @@ export default function Layout() {
             >
               <n.icon />
               {n.label}
+              {n.to === "/partenaires" && unread > 0 && (
+                <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#1d4ed8] px-1.5 text-[11px] font-bold text-white">
+                  {unread > 99 ? "99+" : unread}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -104,7 +138,14 @@ export default function Layout() {
                 aria-current={active ? "page" : undefined}
               >
                 <n.icon />
-                <span className="text-[11.5px] font-semibold">{n.label}</span>
+                <span className="flex items-center gap-1 text-[11.5px] font-semibold">
+                  {n.label}
+                  {n.to === "/partenaires" && unread > 0 && (
+                    <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#1d4ed8] px-1 text-[10px] font-bold text-white">
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
+                </span>
                 <span
                   className={`h-1 w-6 rounded-full transition ${
                     active ? "bg-[#1d4ed8]" : "bg-transparent"
@@ -126,11 +167,29 @@ function IconBox() {
     </svg>
   );
 }
+function IconTag() {
+  return (
+    <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
+      <circle cx="7" cy="7" r="1.5" />
+    </svg>
+  );
+}
 function IconBag() {
   return (
     <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 7h12l1 13H5L6 7z" />
       <path d="M9 7a3 3 0 016 0" />
+    </svg>
+  );
+}
+function IconUsers() {
+  return (
+    <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 00-3-3.87" />
+      <path d="M16 3.13a4 4 0 010 7.75" />
     </svg>
   );
 }

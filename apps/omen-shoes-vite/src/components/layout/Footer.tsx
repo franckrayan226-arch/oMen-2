@@ -68,7 +68,7 @@ export function Footer() {
             </svg>
           </button>
           <ul className={`space-y-1 ${openSection === 'liens' ? 'block' : 'hidden'} sm:block`}>
-            {[{ to: "/catalogue", label: "Nouveautés" }, { to: "/catalogue?promo=true", label: "Promos" }, { to: "/favoris", label: "Favoris" }, { to: "/profil", label: "Profil" }, { to: "/confidentialite", label: "Confidentialité" }].map((l) => (
+            {[{ to: "/catalogue", label: "Nouveautés" }, { to: "/catalogue?promo=true", label: "Promos" }, { to: "/favoris", label: "Favoris" }, { to: "/profil", label: "Profil" }, { to: "/partenaires", label: "Devenir influenceur" }, { to: "/confidentialite", label: "Confidentialité" }].map((l) => (
               <li key={l.label}><Link to={l.to} className="text-[11px] text-[#666] transition-colors hover:text-[#1d4ed8] sm:text-[12px]">{l.label}</Link></li>
             ))}
           </ul>

@@ -102,12 +102,83 @@ export const api = {
 
   setOrderStatus: (id: string, status: string) =>
     fetch(`${API}/api/orders/${id}/status`, { method: "PATCH", headers: { ...jsonHeaders() }, body: JSON.stringify({ status }) }).then(handle),
+
+  categories: (storeId?: string) => {
+    const params = new URLSearchParams({ includeInactive: "1" });
+    if (storeId) params.set("storeId", storeId);
+    return fetch(`${API}/api/categories?${params}`, { headers: authHeaders() })
+      .then(handle)
+      .then((d) => d.data as CategoryAlias[]);
+  },
+
+  createCategory: (body: unknown) =>
+    fetch(`${API}/api/categories`, { method: "POST", headers: { ...jsonHeaders() }, body: JSON.stringify(body) }).then(handle),
+
+  updateCategory: (id: string, body: unknown) =>
+    fetch(`${API}/api/categories/${id}`, { method: "PUT", headers: { ...jsonHeaders() }, body: JSON.stringify(body) }).then(handle),
+
+  deleteCategory: (id: string) =>
+    fetch(`${API}/api/categories/${id}`, { method: "DELETE", headers: authHeaders() }).then(handle),
+
+  partners: (storeId?: string) => {
+    const params = new URLSearchParams();
+    if (storeId) params.set("storeId", storeId);
+    const qs = params.toString();
+    return fetch(`${API}/api/partners${qs ? `?${qs}` : ""}`, { headers: authHeaders() })
+      .then(handle)
+      .then((d) => d.data as PartnerAlias[]);
+  },
+
+  partnerOrders: (id: string) =>
+    fetch(`${API}/api/partners/${id}/orders`, { headers: authHeaders() })
+      .then(handle)
+      .then((d) => d.data as PartnerOrderAlias[]),
+
+  updatePartner: (id: string, body: unknown) =>
+    fetch(`${API}/api/partners/${id}`, { method: "PATCH", headers: { ...jsonHeaders() }, body: JSON.stringify(body) }).then(handle),
+
+  deletePartner: (id: string) =>
+    fetch(`${API}/api/partners/${id}`, { method: "DELETE", headers: authHeaders() }).then(handle),
+
+  partnerConfig: (storeId: string) =>
+    fetch(`${API}/api/partners/config?storeId=${storeId}`, { headers: authHeaders() }).then(handle) as Promise<{
+      discountPct: number;
+      commissionPct: number;
+    }>,
+
+  updatePartnerConfig: (storeId: string, discountPct: number, commissionPct: number) =>
+    fetch(`${API}/api/partners/config`, {
+      method: "PUT",
+      headers: { ...jsonHeaders() },
+      body: JSON.stringify({ storeId, discountPct, commissionPct }),
+    }).then(handle),
+
+  notifications: (storeId?: string) => {
+    const params = new URLSearchParams();
+    if (storeId) params.set("storeId", storeId);
+    const qs = params.toString();
+    return fetch(`${API}/api/notifications${qs ? `?${qs}` : ""}`, { headers: authHeaders() }).then(handle) as Promise<{
+      data: NotificationAlias[];
+      unreadCount: number;
+    }>;
+  },
+
+  markNotificationsRead: (storeId?: string) =>
+    fetch(`${API}/api/notifications/read-all`, {
+      method: "PATCH",
+      headers: { ...jsonHeaders() },
+      body: JSON.stringify(storeId ? { storeId } : {}),
+    }).then(handle),
 };
 
 // aliases pour éviter les imports circulaires de types
 type ProductCardAlias = import("./types").ProductCard;
 type ProductDetailAlias = import("./types").ProductDetail;
 type OrderAlias = import("./types").Order;
+type CategoryAlias = import("./types").Category;
+type PartnerAlias = import("./types").Partner;
+type PartnerOrderAlias = import("./types").PartnerOrder;
+type NotificationAlias = import("./types").AppNotification;
 
 function authHeaders(): HeadersInit {
   return token ? { Authorization: `Bearer ${token}` } : {};

@@ -1,20 +1,11 @@
-import { useState, useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { useProducts, ProductItem } from "@/hooks/useProducts";
+import { useCategories } from "@/hooks/useCategories";
 import { formatPrice } from "@/lib/format";
-
-const CATEGORIES = [
-  "Tous",
-  "Smartphones",
-  "Ordinateurs",
-  "Audio",
-  "Tablettes",
-  "Accessoires",
-  "Montres",
-];
 
 function ProductCard({ p }: { p: ProductItem }) {
   return (
@@ -40,7 +31,7 @@ function ProductCard({ p }: { p: ProductItem }) {
       </div>
       <div className="mt-3.5 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-[12px] text-[#999]">{p.category}</p>
+          <p className="truncate text-[12px] text-[#999]">{p.brand || p.category}</p>
           <p className="mt-0.5 truncate text-[14px] text-[#111]">{p.name}</p>
         </div>
         <div className="shrink-0 text-right">
@@ -54,22 +45,79 @@ function ProductCard({ p }: { p: ProductItem }) {
   );
 }
 
+function brandPillClass(active: boolean) {
+  return `rounded-full border px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] transition-colors duration-200 ${
+    active
+      ? "border-[#111] bg-[#111] text-white"
+      : "border-[#e5e5e5] bg-white text-[#555] hover:border-[#999] hover:text-[#111]"
+  }`;
+}
+
 export default function Catalogue() {
   const { products, loading } = useProducts();
-  const [searchParams] = useSearchParams();
-  const paramCat = searchParams.get("cat");
-  const [cat, setCat] = useState(
-    paramCat && CATEGORIES.includes(paramCat) ? paramCat : "Tous"
+  const { categories: catList } = useCategories();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const paramCat = searchParams.get("cat") || "";
+  const paramMarque = searchParams.get("marque") || "";
+
+  const categories = useMemo(() => {
+    const present = new Set(products.map((p) => p.category).filter(Boolean));
+    // Ordre = ordre du dashboard (sortOrder), puis catégories hors dashboard
+    const orderedFromApi = catList.map((c) => c.name).filter((n) => present.has(n));
+    const extras = Array.from(present)
+      .filter((n) => !orderedFromApi.includes(n))
+      .sort((a, b) => a.localeCompare(b));
+    const ordered = [...orderedFromApi, ...extras];
+    if (paramCat && !ordered.includes(paramCat)) ordered.push(paramCat);
+    return ordered;
+  }, [products, catList, paramCat]);
+
+  const cat = paramCat && categories.includes(paramCat) ? paramCat : "Tous";
+
+  const inCat = useMemo(
+    () => (cat === "Tous" ? products : products.filter((p) => p.category === cat)),
+    [products, cat]
   );
 
-  useEffect(() => {
-    if (paramCat && CATEGORIES.includes(paramCat)) setCat(paramCat);
-  }, [paramCat]);
+  const brands = useMemo(() => {
+    const counts = new Map<string, number>();
+    inCat.forEach((p) => {
+      const b = (p.brand || "").trim();
+      if (b) counts.set(b, (counts.get(b) || 0) + 1);
+    });
+    return Array.from(counts.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([name, count]) => ({ name, count }));
+  }, [inCat]);
 
-  const filtered = useMemo(() => {
-    if (cat === "Tous") return products;
-    return products.filter((p) => p.category === cat);
-  }, [products, cat]);
+  const activeBrand =
+    brands.find((b) => b.name.toLowerCase() === paramMarque.toLowerCase())?.name || "";
+
+  const filtered = useMemo(
+    () =>
+      activeBrand
+        ? inCat.filter((p) => (p.brand || "").trim().toLowerCase() === activeBrand.toLowerCase())
+        : inCat,
+    [inCat, activeBrand]
+  );
+
+  const selectCat = (c: string) => {
+    const next = new URLSearchParams();
+    if (c !== "Tous") next.set("cat", c);
+    setSearchParams(next);
+  };
+
+  const selectBrand = (b: string) => {
+    const next = new URLSearchParams();
+    if (cat !== "Tous") next.set("cat", cat);
+    if (b) next.set("marque", b);
+    setSearchParams(next);
+  };
+
+  const resetAll = () => setSearchParams(new URLSearchParams());
+
+  const tabs = ["Tous", ...categories.filter((c) => c !== "Tous")];
 
   return (
     <div className="flex min-h-screen flex-col bg-[#fafafa] pb-20 md:pb-0">
@@ -82,10 +130,10 @@ export default function Catalogue() {
           </h1>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-[#e5e5e5] pb-4">
-            {CATEGORIES.map((c) => (
+            {tabs.map((c) => (
               <button
                 key={c}
-                onClick={() => setCat(c)}
+                onClick={() => selectCat(c)}
                 className={`font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 ${
                   cat === c
                     ? "font-medium text-[#111]"
@@ -96,6 +144,33 @@ export default function Catalogue() {
               </button>
             ))}
           </div>
+
+          {!loading && brands.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[#999]">
+                Marque
+              </span>
+              <button
+                onClick={() => selectBrand("")}
+                className={brandPillClass(!activeBrand)}
+              >
+                Toutes
+              </button>
+              {brands.map((b) => {
+                const active = activeBrand === b.name;
+                return (
+                  <button
+                    key={b.name}
+                    onClick={() => selectBrand(active ? "" : b.name)}
+                    className={brandPillClass(active)}
+                  >
+                    {b.name}{" "}
+                    <span className={active ? "text-white/50" : "text-[#bbb]"}>({b.count})</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {loading ? (
             <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
@@ -117,7 +192,21 @@ export default function Catalogue() {
             </div>
           ) : (
             <div className="mt-20 text-center">
-              <p className="text-[14px] text-[#999]">Aucun produit dans cette catégorie.</p>
+              <p className="text-[14px] text-[#999]">
+                {activeBrand
+                  ? `Aucun produit pour la marque ${activeBrand}.`
+                  : cat !== "Tous"
+                    ? "Aucun produit dans cette catégorie."
+                    : "Aucun produit disponible pour le moment."}
+              </p>
+              {(activeBrand || cat !== "Tous") && (
+                <button
+                  onClick={resetAll}
+                  className="mt-5 rounded-full border border-[#111] bg-[#111] px-6 py-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-white transition-colors hover:bg-[#1d4ed8] hover:border-[#1d4ed8]"
+                >
+                  Voir tout le catalogue
+                </button>
+              )}
             </div>
           )}
         </div>

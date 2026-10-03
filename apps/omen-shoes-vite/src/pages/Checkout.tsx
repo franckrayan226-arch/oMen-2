@@ -45,7 +45,59 @@ export default function Checkout() {
   const [proofUploading, setProofUploading] = useState(false);
   const [proofError, setProofError] = useState<string | null>(null);
 
-  const omUssd = `*1441*2*1*${PAY_NUMBER}*${total}#`;
+  // Code promo influenceur
+  const [codeInput, setCodeInput] = useState("");
+  const [codeChecking, setCodeChecking] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const [appliedCode, setAppliedCode] = useState<string | null>(null);
+  const [discount, setDiscount] = useState(0);
+  const [discountPct, setDiscountPct] = useState(0);
+
+  const finalTotal = Math.max(0, total - discount);
+
+  const applyCode = async () => {
+    const c = codeInput.trim().toUpperCase();
+    if (!c) return;
+    setCodeChecking(true);
+    setCodeError(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/partners/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          storeId: import.meta.env.VITE_STORE_ID_SHOES,
+          code: c,
+          subtotal: total,
+        }),
+      });
+      const data = await res.json();
+      if (!data.valid) {
+        setCodeError(data.error || "Code invalide");
+        setAppliedCode(null);
+        setDiscount(0);
+        setDiscountPct(0);
+      } else {
+        setAppliedCode(c);
+        setDiscount(data.discount || 0);
+        setDiscountPct(data.discountPct || 0);
+        setCodeInput("");
+      }
+    } catch {
+      setCodeError("Vérification impossible — réessaie");
+    } finally {
+      setCodeChecking(false);
+    }
+  };
+
+  const removeCode = () => {
+    setAppliedCode(null);
+    setDiscount(0);
+    setDiscountPct(0);
+    setCodeError(null);
+  };
+
+  const omUssd = `*1441*2*1*${PAY_NUMBER}*${finalTotal}#`;
+  const moovUssd = `*55*2*1*${MOOV_NUMBER}*${finalTotal}#`;
 
   const locate = () => {
     if (!navigator.geolocation) {
@@ -106,6 +158,7 @@ export default function Checkout() {
             proof: proofUrl,
           },
           paymentMethod: payMethod,
+          couponCode: appliedCode || undefined,
           notes: `Heure: ${form.heure} - Position: ${form.position || "non renseignee"} - Preuve: ${proofUrl}`,
         }),
       });
@@ -123,7 +176,7 @@ export default function Checkout() {
           size: i.size,
           quantity: i.quantity,
         })),
-        total,
+        total: finalTotal,
         city: form.city,
         status: "confirmee",
         paymentMethod: payMethod || "COD",
@@ -189,7 +242,7 @@ export default function Checkout() {
             <div className="space-y-3 rounded-xl bg-white p-4 sm:space-y-4 sm:p-5" style={{ border: "1px solid #e0d6d0" }}>
               <div className="flex items-center justify-between">
                 <h2 className="text-[13px] font-bold text-[#111] sm:text-sm">Mode de paiement</h2>
-                <span className="text-[15px] font-black text-[#111]">{total.toLocaleString("fr-FR")} FCFA</span>
+                <span className="text-[15px] font-black text-[#111]">{finalTotal.toLocaleString("fr-FR")} FCFA</span>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
@@ -208,22 +261,18 @@ export default function Checkout() {
                 >
                   <img src="/img/moov-money.png" alt="Moov Money" className="h-7 w-auto" />
                   <p className="mt-3 text-[13px] font-bold text-[#111]">Moov Money</p>
-                  <ol className="mt-1 space-y-0.5 text-[11px] leading-[1.55] text-[#999]">
-                    <li>1. Compose *555#</li>
-                    <li>2. Transfert → vers un numéro</li>
-                    <li>3. {MOOV_NUMBER} · montant · PIN</li>
-                  </ol>
+                  <p className="mt-1 break-all text-[11px] leading-[1.55] text-[#999]">{moovUssd}</p>
                 </button>
               </div>
               <a
-                href={payMethod === "ORANGE_MONEY" ? `tel:${omUssd.replace("#", "%23")}` : payMethod === "MOOV_MONEY" ? "tel:*555%23" : undefined}
+                href={payMethod === "ORANGE_MONEY" ? `tel:${omUssd.replace("#", "%23")}` : payMethod === "MOOV_MONEY" ? `tel:${moovUssd.replace("#", "%23")}` : undefined}
                 aria-disabled={payMethod ? undefined : true}
                 className={`block w-full rounded-lg bg-[#1d4ed8] py-3.5 text-center text-[14px] font-semibold text-white active:scale-[0.98] sm:py-4 ${payMethod ? "" : "pointer-events-none opacity-40"}`}
               >
                 {payMethod === "ORANGE_MONEY"
                   ? `Composer ${omUssd}`
                   : payMethod === "MOOV_MONEY"
-                    ? "Composer *555#"
+                    ? `Composer ${moovUssd}`
                     : "Choisis un mode de paiement"}
               </a>
               <p className="text-[11px] leading-[1.6] text-[#999]">
@@ -256,13 +305,51 @@ export default function Checkout() {
             <div className="rounded-xl bg-white p-4 sm:p-5" style={{ border: "1px solid #e0d6d0" }}>
               <h2 className="mb-2 text-[13px] font-bold text-[#111] sm:mb-3 sm:text-sm">Récapitulatif</h2>
               {items.map((i) => <div key={`${i.productId}-${i.size}`} className="flex justify-between text-[12px] text-[#666] py-0.5 sm:text-[13px]"><span className="truncate">{i.name} ({i.size}) × {i.quantity}</span><span className="shrink-0 pl-2 font-medium text-[#111]">{(i.price * i.quantity).toLocaleString("fr-FR")} FCFA</span></div>)}
-              <div className="mt-2 pt-2 flex items-center justify-between sm:mt-3 sm:pt-3" style={{ borderTop: "1px solid #e0d6d0" }}><span className="text-[13px] font-bold text-[#111] sm:text-sm">Total</span><span className="text-lg font-black text-[#111]">{total.toLocaleString("fr-FR")} FCFA</span></div>
+
+              {/* Code promo influenceur */}
+              {appliedCode ? (
+                <div className="mt-3 flex items-center justify-between rounded-lg border border-[#1d4ed8] bg-blue-50/50 px-3 py-2.5">
+                  <span className="font-mono text-[12px] font-bold uppercase tracking-[0.12em] text-[#1d4ed8]">
+                    {appliedCode} · -{discountPct}%
+                  </span>
+                  <button type="button" onClick={removeCode} className="text-[11px] text-[#999] transition-colors hover:text-red-600">
+                    Retirer
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-3 flex gap-2">
+                  <input
+                    type="text"
+                    value={codeInput}
+                    onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                    placeholder="Code promo influenceur"
+                    className="input h-10 min-w-0 flex-1 rounded-lg px-3 text-[13px] uppercase tracking-[0.1em] text-[#111] placeholder:normal-case placeholder:tracking-normal placeholder:text-[#999]"
+                  />
+                  <button
+                    type="button"
+                    onClick={applyCode}
+                    disabled={codeChecking || !codeInput.trim()}
+                    className="h-10 shrink-0 rounded-lg border border-[#1d4ed8] px-4 text-[12px] font-semibold text-[#1d4ed8] transition-colors hover:bg-[#1d4ed8] hover:text-white disabled:opacity-40"
+                  >
+                    {codeChecking ? "…" : "Appliquer"}
+                  </button>
+                </div>
+              )}
+              {codeError && !appliedCode && <p className="mt-1.5 text-[11px] text-red-600">{codeError}</p>}
+              {appliedCode && discount > 0 && (
+                <div className="mt-2 flex justify-between text-[12px] text-[#16a34a] sm:text-[13px]">
+                  <span>Réduction ({appliedCode})</span>
+                  <span className="font-medium">- {discount.toLocaleString("fr-FR")} FCFA</span>
+                </div>
+              )}
+
+              <div className="mt-2 pt-2 flex items-center justify-between sm:mt-3 sm:pt-3" style={{ borderTop: "1px solid #e0d6d0" }}><span className="text-[13px] font-bold text-[#111] sm:text-sm">Total</span><span className="text-lg font-black text-[#111]">{finalTotal.toLocaleString("fr-FR")} FCFA</span></div>
             </div>
 
             {error && <div className="rounded-lg bg-red-50 p-3 text-[12px] text-red-600 sm:text-[13px]">{error}</div>}
 
             <button type="submit" disabled={loading || !canSubmit} className="w-full rounded-lg bg-[#1d4ed8] py-3.5 text-[14px] font-semibold text-white active:scale-[0.98] disabled:opacity-50 sm:py-4">
-              {loading ? "Redirection..." : `Confirmer — ${total.toLocaleString("fr-FR")} FCFA`}
+              {loading ? "Redirection..." : `Confirmer — ${finalTotal.toLocaleString("fr-FR")} FCFA`}
             </button>
             <p className="text-center text-[10px] text-[#999] sm:text-[11px]">Orange Money / Moov Money — capture requise</p>
           </form>

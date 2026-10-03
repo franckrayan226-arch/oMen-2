@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // POST /api/payments/create — Créer une commande (Orange Money / Moov Money via USSD)
 router.post('/create', async (req: Request, res: Response) => {
   try {
-    const { storeId, items, customer, shippingAddress, notes, paymentMethod } = req.body;
+    const { storeId, items, customer, shippingAddress, notes, paymentMethod, couponCode } = req.body;
 
     if (!storeId || !items?.length) {
       return res.status(400).json({ error: 'storeId and items required' });
@@ -43,7 +43,22 @@ router.post('/create', async (req: Request, res: Response) => {
     });
 
     const shipping = 0;
-    const total = subtotal + shipping;
+
+    // 2bis. Code promo influenceur : vérifié côté serveur, remise calculée ici
+    let partner: any = null;
+    let discount = 0;
+    let commission = 0;
+    const code = typeof couponCode === 'string' && couponCode.trim() ? couponCode.trim().toUpperCase() : null;
+    if (code) {
+      const p = await prisma.partner.findUnique({ where: { code } });
+      if (p && p.storeId === storeId && p.active) {
+        partner = p;
+        discount = Math.round((subtotal * store.partnerDiscountPct) / 100);
+        commission = Math.round((subtotal * store.partnerCommissionPct) / 100);
+      }
+    }
+
+    const total = subtotal - discount + shipping;
 
     // Adresse de livraison : accepte objet OU chaîne JSON, et y ajoute les infos client
     let addr: any = {};
@@ -72,6 +87,10 @@ router.post('/create', async (req: Request, res: Response) => {
         status: 'PENDING',
         shippingAddress: Object.keys(addr).length ? JSON.stringify(addr) : undefined,
         notes: customer?.phone ? `Tél: ${customer.phone}${customer.email ? ` — Email: ${customer.email}` : ''}${notes ? ` — ${notes}` : ''}` : notes,
+        couponCode: partner ? partner.code : null,
+        ...(partner ? { partner: { connect: { id: partner.id } } } : {}),
+        discount,
+        commission,
         items: {
           create: orderItems,
         },
@@ -79,10 +98,29 @@ router.post('/create', async (req: Request, res: Response) => {
       include: { items: true },
     });
 
+    // Notification dashboard : code utilisé
+    if (partner) {
+      const itemCount = orderItems.reduce((sum: number, i: any) => sum + i.quantity, 0);
+      try {
+        await prisma.notification.create({
+          data: {
+            storeId,
+            partnerId: partner.id,
+            type: 'partner_sale',
+            title: `Code ${partner.code} utilisé`,
+            body: `${partner.name} · ${itemCount} article${itemCount > 1 ? 's' : ''} · réduction -${discount} FCFA · commission ${commission} FCFA`,
+          },
+        });
+      } catch (e) {
+        console.error('Notification error:', e);
+      }
+    }
+
     return res.json({
       success: true,
       orderId: order.id,
       reference,
+      discount,
       redirectUrl: null,
     });
   } catch (error: any) {

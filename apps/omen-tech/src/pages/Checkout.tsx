@@ -49,6 +49,7 @@ export default function Checkout() {
   const [proofError, setProofError] = useState<string | null>(null);
 
   const omUssd = `*1441*2*1*${PAY_NUMBER}*${total}#`;
+  const moovUssd = `*55*2*1*${MOOV_NUMBER}*${total}#`;
 
   const locate = () => {
     if (!navigator.geolocation) {
@@ -284,11 +285,7 @@ export default function Checkout() {
                 >
                   <img src="/img/moov-money.png" alt="Moov Money" className="h-7 w-auto" />
                   <p className="mt-3 text-[13px] font-medium text-[#111]">Moov Money</p>
-                  <ol className="mt-1 space-y-0.5 text-[11px] leading-[1.5] text-[#999]">
-                    <li>1. Compose *555#</li>
-                    <li>2. Transfert → vers un numéro</li>
-                    <li>3. {MOOV_NUMBER} · montant · PIN</li>
-                  </ol>
+                  <p className="mt-1 break-all text-[11px] leading-[1.5] text-[#999]">{moovUssd}</p>
                   <span className="mt-3 inline-flex items-center border border-[#111] px-3 py-2 text-[12px] font-medium text-[#111]">
                     Sélectionner
                   </span>
@@ -297,7 +294,7 @@ export default function Checkout() {
 
               <div className="mt-3 flex flex-col gap-2 sm:flex-row">
                 <a
-                  href={payMethod === "ORANGE_MONEY" ? `tel:${omUssd.replace("#", "%23")}` : payMethod === "MOOV_MONEY" ? "tel:*555%23" : undefined}
+                  href={payMethod === "ORANGE_MONEY" ? `tel:${omUssd.replace("#", "%23")}` : payMethod === "MOOV_MONEY" ? `tel:${moovUssd.replace("#", "%23")}` : undefined}
                   aria-disabled={payMethod ? undefined : true}
                   className={`flex-1 bg-[#111] py-4 text-center text-[13px] font-medium text-white transition-opacity ${
                     payMethod ? "hover:opacity-80" : "pointer-events-none opacity-40"
@@ -306,7 +303,7 @@ export default function Checkout() {
                   {payMethod === "ORANGE_MONEY"
                     ? `Composer ${omUssd}`
                     : payMethod === "MOOV_MONEY"
-                      ? "Composer *555#"
+                      ? `Composer ${moovUssd}`
                       : "Choisis un mode de paiement"}
                 </a>
               </div>

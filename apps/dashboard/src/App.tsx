@@ -5,6 +5,8 @@ import Layout from "@/components/Layout";
 import ProductsPage from "@/pages/Products";
 import ProductFormPage from "@/pages/ProductForm";
 import OrdersPage from "@/pages/Orders";
+import CategoriesPage from "@/pages/Categories";
+import PartnersPage from "@/pages/Partenaires";
 
 export default function App() {
   const { isAuthed } = useAuth();
@@ -25,6 +27,8 @@ export default function App() {
         <Route path="/produits/nouveau" element={<ProductFormPage />} />
         <Route path="/produits/:id/edition" element={<ProductFormPage />} />
         <Route path="/commandes" element={<OrdersPage />} />
+        <Route path="/categories" element={<CategoriesPage />} />
+        <Route path="/partenaires" element={<PartnersPage />} />
         <Route path="*" element={<Navigate to="/produits" replace />} />
       </Route>
     </Routes>

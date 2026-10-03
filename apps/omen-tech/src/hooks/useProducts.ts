@@ -28,14 +28,14 @@ export function useProducts() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API}/api/products?storeId=${STORE_ID}&includeInactive=0`)
+    fetch(`${API}/api/products?storeId=${STORE_ID}&includeInactive=0&limit=100`)
       .then((r) => r.json())
       .then((d) => {
         const items = (d.data || []).map((p: any) => ({
           id: p.id,
           slug: p.slug,
           name: p.name,
-          brand: p.brand || p.category || "",
+          brand: p.brand || "",
           price: p.price,
           compareAt: p.compareAt,
           badge: p.badge || null,

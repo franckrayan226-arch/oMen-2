@@ -25,6 +25,32 @@ model Store {
   products   Product[]
   orders     Order[]
   customers  Customer[]
+  categories Category[]
+  partners   Partner[]
+  notifications Notification[]
+
+  // Partenariats influenceurs (config globale par boutique)
+  partnerDiscountPct   Int @default(10) // % offert au client via le code influenceur
+  partnerCommissionPct Int @default(5)  // % de commission versé à l'influenceur
+}
+
+// ============================================================
+// CATEGORIES (source de vérité — gérées depuis le dashboard)
+// ============================================================
+
+model Category {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  name      String
+  image     String   @default("")
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([storeId, name])
+  @@index([storeId, active])
 }
 
 // ============================================================
@@ -41,6 +67,7 @@ model Product {
   price       Int      // Prix de base en FCFA
   compareAt   Int?     // Prix barré
   category    String
+  brand       String   @default("") // Marque: iPhone, Samsung, JBL...
   tags        String   @default("") // Stocké comme "tag1,tag2,tag3"
   active      Boolean  @default(true)
   featured    Boolean  @default(false)
@@ -147,6 +174,11 @@ model Order {
   paymentRef      String?  // GeniusPay reference
   shippingAddress String?  // JSON string snapshot de l'adresse
   notes           String?
+  couponCode      String?   // Code influenceur utilisé (ex: KM4X9B)
+  partnerId       String?
+  partner         Partner?  @relation(fields: [partnerId], references: [id])
+  discount        Int      @default(0) // Réduction accordée via le code (FCFA)
+  commission      Int      @default(0) // Commission due à l'influenceur (FCFA)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -154,6 +186,7 @@ model Order {
 
   @@index([storeId, status])
   @@index([reference])
+  @@index([partnerId])
 }
 
 model OrderItem {
@@ -198,5 +231,46 @@ model PaymentLog {
   createdAt  DateTime @default(now())
 
   @@index([reference])
+}
+
+// ============================================================
+// PARTENAIRES INFLUENCEURS (codes promo uniques)
+// ============================================================
+
+model Partner {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  name      String
+  phone     String?
+  handle    String?  // @instagram / tiktok
+  code      String   @unique // Code promo unique généré
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders        Order[]
+  notifications Notification[]
+
+  @@index([storeId, active])
+}
+
+// ============================================================
+// NOTIFICATIONS DASHBOARD
+// ============================================================
+
+model Notification {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  partnerId String?
+  partner   Partner? @relation(fields: [partnerId], references: [id])
+  type      String   // "partner_sale"
+  title     String
+  body      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([storeId, read])
 }
 

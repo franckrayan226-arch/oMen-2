@@ -60,6 +60,7 @@ export default function ProductForm() {
   const [price, setPrice] = useState<number>(0);
   const [compareAt, setCompareAt] = useState<number | null>(null);
   const [category, setCategory] = useState("Sneakers");
+  const [brand, setBrand] = useState("");
   const [tags, setTags] = useState("");
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
@@ -80,6 +81,27 @@ export default function ProductForm() {
   const categories =
     siteKey === "shoes" ? SHOES_CATEGORIES : siteKey === "tech" ? TECH_CATEGORIES : WELLNESS_CATEGORIES;
 
+  // Suggestions de marques existantes pour cette boutique
+  const [existingBrands, setExistingBrands] = useState<string[]>([]);
+  useEffect(() => {
+    let alive = true;
+    api
+      .products(storeId)
+      .then((list: any[]) => {
+        if (!alive) return;
+        const set = new Set<string>();
+        list.forEach((p) => {
+          const b = (p.brand || "").trim();
+          if (b) set.add(b);
+        });
+        setExistingBrands(Array.from(set).sort());
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [storeId]);
+
   // Charger un produit existant (édition)
   useEffect(() => {
     if (!id) return;
@@ -94,6 +116,7 @@ export default function ProductForm() {
         setPrice(p.price || 0);
         setCompareAt(p.compareAt || null);
         setCategory(p.category || "");
+        setBrand(p.brand || "");
         setTags(Array.isArray(p.tags) ? p.tags.join(", ") : p.tags || "");
         setActive(p.active ?? true);
         setFeatured(p.featured ?? false);
@@ -269,6 +292,7 @@ export default function ProductForm() {
         price,
         compareAt,
         category,
+        brand: brand.trim(),
         tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
         active,
         featured,
@@ -416,6 +440,22 @@ export default function ProductForm() {
                   </option>
                 ))}
               </select>
+            </Field>
+
+            <Field label="Marque">
+              <input
+                type="text"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                className="input"
+                placeholder="ex : iPhone, Samsung, JBL…"
+                list="brand-suggestions"
+              />
+              <datalist id="brand-suggestions">
+                {(existingBrands || []).map((b) => (
+                  <option key={b} value={b} />
+                ))}
+              </datalist>
             </Field>
 
             <Field label="Description">

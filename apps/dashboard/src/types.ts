@@ -68,6 +68,7 @@ export interface ProductFormData {
   price: number;
   compareAt: number | null;
   category: string;
+  brand: string;
   tags: string[];
   active: boolean;
   featured: boolean;
@@ -91,6 +92,9 @@ export interface Order {
   subtotal?: number;
   shipping?: number;
   total: number;
+  couponCode?: string | null;
+  discount?: number;
+  commission?: number;
   currency?: string;
   paymentMethod?: string | null;
   shippingAddress?: string | null; // JSON: { name, phone, email, street, city, country }
@@ -98,6 +102,65 @@ export interface Order {
   customer?: { name?: string | null; phone?: string | null } | null;
   store?: { name: string; displayName: string } | null;
   items: OrderItem[];
+}
+
+// Catégories (gérées depuis le dashboard, servies aux fronts)
+export interface Category {
+  id: string;
+  storeId: string;
+  name: string;
+  image: string;
+  sortOrder: number;
+  active: boolean;
+}
+
+// Partenaires influenceurs
+export interface Partner {
+  id: string;
+  storeId: string;
+  name: string;
+  phone: string | null;
+  handle: string | null;
+  code: string;
+  active: boolean;
+  createdAt: string;
+  ordersCount: number;
+  itemCount: number;
+  discountTotal: number;
+  commissionTotal: number;
+  lastUsed: string | null;
+}
+
+export interface PartnerOrderItem {
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface PartnerOrder {
+  id: string;
+  reference: string | null;
+  createdAt: string;
+  status: string;
+  subtotal: number;
+  total: number;
+  discount: number;
+  commission: number;
+  customerName: string | null;
+  customerPhone: string | null;
+  items: PartnerOrderItem[];
+}
+
+export interface AppNotification {
+  id: string;
+  storeId: string;
+  partnerId: string | null;
+  type: string;
+  title: string;
+  body: string | null;
+  read: boolean;
+  createdAt: string;
+  partner?: { name: string; code: string } | null;
 }
 
 // Store config

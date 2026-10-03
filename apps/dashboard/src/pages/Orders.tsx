@@ -155,9 +155,19 @@ export default function Orders() {
                     <p className="mt-0.5 text-[12.5px] font-semibold text-[#1d4ed8]">
                       {order.reference || `#${order.id.slice(-8).toUpperCase()}`}
                     </p>
+                    {order.couponCode && (
+                      <p className="mt-1 inline-block rounded-md border border-[#1d4ed8]/40 bg-blue-50 px-2 py-0.5 font-mono text-[11.5px] font-bold tracking-[0.1em] text-[#1d4ed8]">
+                        Code {order.couponCode}
+                      </p>
+                    )}
                   </div>
                   <div className="shrink-0 text-right">
                     <p className="text-[17px] font-extrabold">{formatPrice(order.total)}</p>
+                    {(order.discount ?? 0) > 0 && (
+                      <p className="text-[12px] font-semibold text-[#16a34a]">
+                        Réduction -{formatPrice(order.discount!)} · Comm. {formatPrice(order.commission ?? 0)}
+                      </p>
+                    )}
                     <span
                       className={`mt-1 inline-block rounded-full border px-2.5 py-0.5 text-[11.5px] font-bold ${info.chip}`}
                     >

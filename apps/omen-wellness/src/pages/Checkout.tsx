@@ -36,6 +36,7 @@ export default function Checkout() {
   const [proofError, setProofError] = useState<string | null>(null);
 
   const omUssd = `*1441*2*1*${PAY_NUMBER}*${total}#`;
+  const moovUssd = `*55*2*1*${MOOV_NUMBER}*${total}#`;
 
   const locate = () => {
     if (!navigator.geolocation) {
@@ -196,23 +197,19 @@ export default function Checkout() {
                 >
                   <img src="/img/moov-money.png" alt="Moov Money" className="h-7 w-auto" />
                   <p className="mt-3 text-[12.5px] font-bold text-[#17211a]">Moov Money</p>
-                  <ol className="mt-1 space-y-0.5 text-[10.5px] leading-[1.55] text-[#17211a]/55">
-                    <li>1. Compose *555#</li>
-                    <li>2. Transfert → vers un numéro</li>
-                    <li>3. {MOOV_NUMBER} · montant · PIN</li>
-                  </ol>
+                  <p className="mt-1 break-all text-[10.5px] leading-[1.55] text-[#17211a]/55">{moovUssd}</p>
                 </button>
               </div>
 
               <a
-                href={payMethod === "ORANGE_MONEY" ? `tel:${omUssd.replace("#", "%23")}` : payMethod === "MOOV_MONEY" ? "tel:*555%23" : undefined}
+                href={payMethod === "ORANGE_MONEY" ? `tel:${omUssd.replace("#", "%23")}` : payMethod === "MOOV_MONEY" ? `tel:${moovUssd.replace("#", "%23")}` : undefined}
                 aria-disabled={payMethod ? undefined : true}
                 className={`btn-terra mt-3 block w-full rounded-full py-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] ${payMethod ? "" : "pointer-events-none opacity-40"}`}
               >
                 {payMethod === "ORANGE_MONEY"
                   ? `Composer ${omUssd}`
                   : payMethod === "MOOV_MONEY"
-                    ? "Composer *555#"
+                    ? `Composer ${moovUssd}`
                     : "Choisis un mode de paiement"}
               </a>
               <p className="mt-2.5 text-center text-[10px] leading-[1.6] text-[#17211a]/50">

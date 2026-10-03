@@ -10,7 +10,7 @@ router.get('/', async (req: Request, res: Response) => {
     const { storeId, site, category, featured, page = '1', limit = '20', search, includeInactive } = req.query;
 
     const where: any = {};
-    if (!includeInactive) where.active = true;
+    if (includeInactive !== '1') where.active = true;
     const storeFilter = (site as string) || (storeId as string);
     if (storeFilter) where.storeId = storeFilter === 'shoes' ? 'omen-shoes' : storeFilter === 'wellness' ? 'omen-wellness' : storeFilter === 'tech' ? 'omen-tech' : storeFilter;
     if (category) where.category = category as string;
@@ -103,6 +103,7 @@ router.post('/', async (req: Request, res: Response) => {
       compareAt,
       images,
       category,
+      brand,
       tags,
       active,
       featured,
@@ -119,6 +120,7 @@ router.post('/', async (req: Request, res: Response) => {
         price,
         compareAt,
         category,
+        brand: brand || '',
         tags: Array.isArray(tags) ? tags.join(',') : (tags || ''),
         active: active ?? true,
         featured: featured || false,
@@ -190,6 +192,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       price,
       compareAt,
       category,
+      brand,
       tags,
       active,
       featured,
@@ -208,6 +211,7 @@ router.put('/:id', async (req: Request, res: Response) => {
         price,
         compareAt,
         category,
+        brand: brand ?? undefined,
         tags: Array.isArray(tags) ? tags.join(',') : (tags || ''),
         active,
         featured,

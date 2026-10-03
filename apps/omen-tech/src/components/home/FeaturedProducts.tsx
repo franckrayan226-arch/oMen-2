@@ -91,7 +91,7 @@ export function FeaturedProducts() {
                       {p.name}
                     </Link>
                     <p className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.14em] text-[#999]">
-                      {p.brand}
+                      {p.brand || p.category}
                     </p>
                   </div>
                   <p className="shrink-0 text-[14px] font-medium">{formatPrice(p.price)}</p>

@@ -8,6 +8,7 @@ import OrderSuccess from "./pages/OrderSuccess";
 import Favoris from "./pages/Favoris";
 import Profil from "./pages/Profil";
 import Confidentialite from "./pages/Confidentialite";
+import Partenaires from "./pages/Partenaires";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
       <Route path="/favoris" element={<Favoris />} />
       <Route path="/profil" element={<Profil />} />
       <Route path="/confidentialite" element={<Confidentialite />} />
+      <Route path="/partenaires" element={<Partenaires />} />
     </Routes>
   );
 }
