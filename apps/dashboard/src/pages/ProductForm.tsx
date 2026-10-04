@@ -39,6 +39,8 @@ const STORE_CHOICES = [
   { id: "omen-tech", label: "oMen Tech", hint: "High-tech" },
 ] as const;
 
+const SHOES_SIZE_CHOICES = ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"];
+
 function slugify(s: string) {
   return s
     .toLowerCase()
@@ -65,6 +67,7 @@ export default function ProductForm() {
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
   const [preorder, setPreorder] = useState(false);
+  const [sizes, setSizes] = useState<string[]>(DEFAULT_SIZES_SHOES);
 
   const [colors, setColors] = useState<ColorDef[]>([]);
   const [globalImages, setGlobalImages] = useState<ImageDef[]>([]);
@@ -122,6 +125,11 @@ export default function ProductForm() {
         setActive(p.active ?? true);
         setFeatured(p.featured ?? false);
         setPreorder(!!p.preorder);
+        setSizes(
+          typeof p.sizes === "string" && p.sizes.trim()
+            ? p.sizes.split(",").map((s: string) => s.trim()).filter(Boolean)
+            : DEFAULT_SIZES_SHOES
+        );
         if ((p.colors || []).length > 0 || (p.images || []).length > 0) setShowAdvanced(true);
 
         const loadedColors: ColorDef[] = (p.colors || []).map((c: any) => ({
@@ -307,6 +315,7 @@ export default function ProductForm() {
         active,
         featured,
         preorder: storeId === "omen-shoes" && preorder,
+        sizes: storeId === "omen-shoes" ? sizes : [],
         colors: colors.map((c, ci) => ({
           name: c.name,
           hex: c.hex,
@@ -510,6 +519,43 @@ export default function ProductForm() {
                 </div>
                 <p className="mt-1.5 text-[12px] text-[#999]">
                   Option exclusive à oMen Shoes — le solde est encaissé à la livraison.
+                </p>
+              </Field>
+            )}
+
+            {storeId === "omen-shoes" && (
+              <Field label="Tailles disponibles à la commande">
+                <div className="flex flex-wrap gap-2">
+                  {SHOES_SIZE_CHOICES.map((s) => {
+                    const on = sizes.includes(s);
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() =>
+                          setSizes((prev) =>
+                            on ? prev.filter((x) => x !== s) : [...prev, s]
+                          )
+                        }
+                        className={`min-h-[40px] min-w-[44px] rounded-xl border-2 px-3 text-[14px] font-bold transition ${
+                          on
+                            ? "border-[#1d4ed8] bg-blue-50 text-[#1d4ed8]"
+                            : "border-black/10 bg-white text-[#888] hover:border-black/25"
+                        }`}
+                        aria-pressed={on}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-1.5 text-[12px] text-[#999]">
+                  Le client choisira une de ces tailles au moment de la commande.{" "}
+                  {sizes.length === 0 && (
+                    <span className="font-semibold text-[#ea580c]">
+                      Aucune taille sélectionnée — la boutique affichera les tailles par défaut.
+                    </span>
+                  )}
                 </p>
               </Field>
             )}

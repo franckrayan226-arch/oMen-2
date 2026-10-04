@@ -10,6 +10,12 @@ export default function Cart() {
   const updateQuantity = useCart((s) => s.updateQuantity);
   const total = useCart((s) => s.total());
 
+  // Articles sur commande : moitié à payer maintenant, solde à la livraison
+  const preorderSum = items.reduce((sum, i) => (i.preorder ? sum + i.price * i.quantity : sum), 0);
+  const dueAtDelivery = Math.floor(preorderSum / 2);
+  const dueNow = Math.max(0, total - dueAtDelivery);
+  const hasPreorder = dueAtDelivery > 0;
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -49,7 +55,12 @@ export default function Cart() {
                           <button onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)} className="btn-secondary flex h-7 w-7 items-center justify-center rounded-lg text-[14px]">+</button>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[13px] font-bold text-[#111] sm:text-[14px]">{(item.price * item.quantity).toLocaleString("fr-FR")} FCFA</span>
+                          <div className="text-right">
+                            <span className="block text-[13px] font-bold text-[#111] sm:text-[14px]">{(item.price * item.quantity).toLocaleString("fr-FR")} FCFA</span>
+                            {item.preorder && (
+                              <span className="block text-[10px] font-bold text-[#ea580c]">50% : {(item.price * item.quantity - Math.floor((item.price * item.quantity) / 2)).toLocaleString("fr-FR")} F à payer</span>
+                            )}
+                          </div>
                           <button onClick={() => removeItem(item.productId, item.size)} className="text-[14px] text-[#999]">✕</button>
                         </div>
                       </div>
@@ -67,6 +78,13 @@ export default function Cart() {
                   <span className="text-[#666]">Livraison</span>
                   <span className="font-medium text-[#111]">Gratuite</span>
                 </div>
+                {hasPreorder && (
+                  <div className="mt-3 rounded-lg border border-orange-300 bg-orange-50 px-3 py-2.5 text-[12px] leading-relaxed text-orange-800">
+                    <p className="font-bold">Articles sur commande : 50% à la commande</p>
+                    <p className="mt-1">À payer maintenant : <b>{dueNow.toLocaleString("fr-FR")} FCFA</b></p>
+                    <p>À régler à la livraison : <b>{dueAtDelivery.toLocaleString("fr-FR")} FCFA</b></p>
+                  </div>
+                )}
                 <div className="mt-3 pt-3" style={{ borderTop: "1px solid #e0d6d0" }}>
                   <div className="flex items-center justify-between">
                     <span className="text-[14px] font-bold text-[#111]">Total</span>

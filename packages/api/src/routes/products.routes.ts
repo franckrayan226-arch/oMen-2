@@ -108,6 +108,7 @@ router.post('/', async (req: Request, res: Response) => {
       active,
       featured,
       preorder,
+      sizes,
       colors,
       variants,
     } = req.body;
@@ -148,6 +149,7 @@ router.post('/', async (req: Request, res: Response) => {
         active: active ?? true,
         featured: featured || false,
         preorder: storeId === 'omen-shoes' && !!preorder,
+        sizes: storeId === 'omen-shoes' && Array.isArray(sizes) ? sizes.map((s: any) => String(s).trim()).filter(Boolean).join(',') : '',
         colors: colors?.length ? {
           create: colors.map((c: any, idx: number) => ({
             name: c.name,
@@ -231,6 +233,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       active,
       featured,
       preorder,
+      sizes,
       colors,
       images,
       variants,
@@ -251,6 +254,9 @@ router.put('/:id', async (req: Request, res: Response) => {
         active,
         featured,
         ...(typeof preorder === 'boolean' && storeId === 'omen-shoes' ? { preorder } : {}),
+        ...(storeId === 'omen-shoes' && Array.isArray(sizes)
+          ? { sizes: sizes.map((s: any) => String(s).trim()).filter(Boolean).join(',') }
+          : {}),
       },
     });
 

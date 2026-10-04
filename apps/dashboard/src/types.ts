@@ -73,6 +73,7 @@ export interface ProductFormData {
   active: boolean;
   featured: boolean;
   preorder: boolean;
+  sizes: string[];
   colors: ColorDef[];
   images: ImageDef[];
   variants: VariantDef[];

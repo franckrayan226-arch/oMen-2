@@ -72,6 +72,7 @@ model Product {
   active      Boolean  @default(true)
   featured    Boolean  @default(false)
   preorder    Boolean  @default(false) // true = sur commande (50% à la commande, solde à la livraison) — oMen Shoes uniquement
+  sizes       String   @default("") // Tailles disponibles "38,39,40" — oMen Shoes uniquement
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

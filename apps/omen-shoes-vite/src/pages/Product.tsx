@@ -13,6 +13,12 @@ import { Reveal } from '@/components/ui/Reveal';
 
 const SIZES = ["38", "39", "40", "41", "42", "43", "44"];
 
+function parseSizes(raw: unknown): string[] | null {
+  if (typeof raw !== "string") return null;
+  const list = raw.split(",").map((s) => s.trim()).filter(Boolean);
+  return list.length ? list : null;
+}
+
 const FALLBACK_PRODUCTS: Record<string, { id: string; name: string; brand: string; price: number; description: string; colors: { name: string; hex: string }[]; images: string[] }> = {
   "nike-air-max-90": { id: "1", name: "Nike Air Max 90", brand: "Nike", price: 45000, description: "L'Air Max 90 revisité avec une bonde Air emblématique pour un confort tout-day.", colors: [{ name: "Noir/Blanc", hex: "#111" }, { name: "Blanc/Gris", hex: "#e5e5e5" }, { name: "Triple Noir", hex: "#1a1a1a" }], images: ["/shoes/nike-air-max-90.jpg", "/shoes/nike-air-force-1-og.jpg", "/shoes/nike-dunk-low.jpg"] },
   "jordan-1-retro-high": { id: "2", name: "Jordan 1 Retro High OG", brand: "Jordan", price: 75000, description: "L'original qui a tout lancé. Cuir premium et silhouète iconique.", colors: [{ name: "Bred", hex: "#111" }, { name: "Chicago", hex: "#c41e3a" }], images: ["/shoes/jordan-1.jpg", "/shoes/jordan-4-retro.jpg"] },
@@ -43,8 +49,10 @@ export default function Product() {
     name: apiProduct.name,
     brand: apiProduct.brand || apiProduct.category || "",
     price: apiProduct.price,
+    compareAt: apiProduct.compareAt ?? null,
     description: apiProduct.description || "",
     preorder: !!apiProduct.preorder,
+    sizes: parseSizes(apiProduct.sizes) ?? SIZES,
     colors: apiProduct.colors?.map((c: any) => ({ name: c.name, hex: c.hex })) || fallback.colors,
     images: [
       ...((apiProduct.images || []).map((img: any) => resolveImage(img.url))),
@@ -55,9 +63,13 @@ export default function Product() {
           ...((apiProduct.colors || []).flatMap((c: any) => (c.images || []).map((img: any) => resolveImage(img.url)))),
         ].filter(Boolean)
       : fallback.images,
-  } : (loading ? { ...fallback, images: [], preorder: false } : { ...fallback, preorder: false });
+  } : (loading ? { ...fallback, images: [], preorder: false, sizes: SIZES, compareAt: null } : { ...fallback, preorder: false, sizes: SIZES, compareAt: null });
 
   const isFav = favItems.some((i) => i.productId === product.id);
+
+  // Articles sur commande : moitié du prix à payer maintenant, solde à la livraison
+  const payNow = product.preorder ? product.price - Math.floor(product.price / 2) : product.price;
+  const dueAtDelivery = product.preorder ? Math.floor(product.price / 2) : 0;
 
   useEffect(() => {
     setSelectedColor(0);
@@ -125,10 +137,21 @@ export default function Product() {
               </div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1d4ed8] sm:text-[11px]">{product.brand}</p>
               <h1 className="mt-1 text-3xl text-[#111] sm:text-5xl lg:text-6xl" style={{ fontFamily: '"Playfair Display", serif', fontStyle: "italic", fontWeight: 800, lineHeight: 1.1 }}>{product.name}</h1>
+              <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="text-2xl font-black text-[#111] sm:text-3xl">{product.price.toLocaleString("fr-FR")} <span className="text-[13px] font-bold text-[#666] sm:text-[15px]">FCFA</span></span>
+                {product.compareAt ? <span className="text-[14px] font-medium text-[#999] line-through sm:text-[15px]">{product.compareAt.toLocaleString("fr-FR")} FCFA</span> : null}
+                {product.preorder && (
+                  <span className="rounded-full bg-[#ea580c] px-2.5 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em] text-white sm:text-[10.5px]">50% à la commande</span>
+                )}
+              </div>
               <p className="mt-4 text-[14px] leading-relaxed text-[#666] sm:text-[16px] max-w-2xl">{product.description} Conçue avec une attention méticuleuse aux détails, cette paire incarne l'alliance parfaite entre héritage culturel et innovation moderne.</p>
               {product.preorder && (
                 <div className="mt-4 max-w-2xl rounded-xl border border-orange-300 bg-orange-50 px-4 py-3 text-[13px] leading-relaxed text-orange-800 sm:text-[13.5px]">
-                  <span className="font-bold">Article sur commande —</span> 50% à la commande, le solde est réglé à la livraison.
+                  <span className="font-bold">Article sur commande —</span>50% à la commande, le solde est réglé à la livraison.
+                  <div className="mt-2 space-y-0.5 text-[12.5px] sm:text-[13px]">
+                    <p>À payer maintenant (50%) : <b>{payNow.toLocaleString("fr-FR")} FCFA</b></p>
+                    <p>À régler à la livraison : <b>{dueAtDelivery.toLocaleString("fr-FR")} FCFA</b></p>
+                  </div>
                 </div>
               )}
             </Reveal>
@@ -145,7 +168,7 @@ export default function Product() {
               <div className="mt-5">
                 <p className="mb-2 text-[12px] font-semibold text-[#111]">Taille {selectedSize && <span className="font-normal">— {selectedSize}</span>}</p>
                 <div className="flex flex-wrap gap-2">
-                  {SIZES.map((s) => (
+                  {product.sizes.map((s) => (
                     <button key={s} onClick={() => { setSelectedSize(s); setShowSizes(false); }} className={`h-11 min-w-[44px] rounded-lg px-3 text-[13px] font-medium transition-colors ${selectedSize === s ? "btn-primary" : "btn-secondary"}`}>{s}</button>
                   ))}
                 </div>

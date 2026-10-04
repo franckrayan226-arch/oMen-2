@@ -29,8 +29,15 @@ export function StickyCart({ productId, slug, name, brand, price, image, selecte
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] text-[#666] truncate">{brand}{selectedSize ? ` · T${selectedSize}` : ""}{preorder ? " · sur commande : 50% + solde à la livraison" : ""}</p>
-          <p className="text-[16px] font-black text-[#111]">{price.toLocaleString("fr-FR")} <span className="text-[11px] font-medium text-[#666]">FCFA</span></p>
+          <p className="text-[10px] text-[#666] truncate">{brand}{selectedSize ? ` · T${selectedSize}` : ""}{preorder ? " · sur commande" : ""}</p>
+          {preorder ? (
+            <>
+              <p className="text-[16px] font-black text-[#111]">{price.toLocaleString("fr-FR")} <span className="text-[11px] font-medium text-[#666]">FCFA</span></p>
+              <p className="text-[9.5px] font-bold text-[#ea580c]">50% : {(price - Math.floor(price / 2)).toLocaleString("fr-FR")} F à payer · solde livraison</p>
+            </>
+          ) : (
+            <p className="text-[16px] font-black text-[#111]">{price.toLocaleString("fr-FR")} <span className="text-[11px] font-medium text-[#666]">FCFA</span></p>
+          )}
         </div>
         <button
           onClick={handleAdd}

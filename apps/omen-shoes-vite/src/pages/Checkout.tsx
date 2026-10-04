@@ -318,12 +318,19 @@ export default function Checkout() {
             <div className="rounded-xl bg-white p-4 sm:p-5" style={{ border: "1px solid #e0d6d0" }}>
               <h2 className="mb-2 text-[13px] font-bold text-[#111] sm:mb-3 sm:text-sm">Récapitulatif</h2>
               {items.map((i) => (
-                <div key={`${i.productId}-${i.size}`} className="flex justify-between text-[12px] text-[#666] py-0.5 sm:text-[13px]">
-                  <span className="truncate">
-                    {i.name} ({i.size}) × {i.quantity}
-                    {i.preorder && <span className="ml-1 font-semibold text-orange-600">· sur commande</span>}
-                  </span>
-                  <span className="shrink-0 pl-2 font-medium text-[#111]">{(i.price * i.quantity).toLocaleString("fr-FR")} FCFA</span>
+                <div key={`${i.productId}-${i.size}`} className="py-0.5">
+                  <div className="flex justify-between text-[12px] text-[#666] sm:text-[13px]">
+                    <span className="truncate">
+                      {i.name} ({i.size}) × {i.quantity}
+                      {i.preorder && <span className="ml-1 font-semibold text-orange-600">· sur commande</span>}
+                    </span>
+                    <span className="shrink-0 pl-2 font-medium text-[#111]">{(i.price * i.quantity).toLocaleString("fr-FR")} FCFA</span>
+                  </div>
+                  {i.preorder && (
+                    <p className="text-right text-[10.5px] font-bold text-orange-600">
+                      50% à payer : {(i.price * i.quantity - Math.floor((i.price * i.quantity) / 2)).toLocaleString("fr-FR")} FCFA
+                    </p>
+                  )}
                 </div>
               ))}
 

@@ -160,7 +160,7 @@ export function ProductCard({ id, slug, name, brand, price, compareAt, colors, b
         {/* editorial hairline, then the service row */}
         <div className="mt-2 flex items-center justify-between border-t border-[#111]/[0.07] pt-2.5">
           {preorder ? (
-            <span className="text-[9.5px] font-bold tracking-wide text-[#ea580c]">Sur commande · 50% + solde livraison</span>
+            <span className="text-[9.5px] font-bold tracking-wide text-[#ea580c]">50% : {(price - Math.floor(price / 2)).toLocaleString("fr-FR")} F à payer</span>
           ) : compareAt ? (
             <span className="text-[10px] font-medium text-[#111]/40 line-through">{compareAt.toLocaleString("fr-FR")} F</span>
           ) : (
