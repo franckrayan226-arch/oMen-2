@@ -176,6 +176,9 @@ export default function PartnersPage() {
         <p className="mt-2 text-[12px] text-[#999]">
           Ces pourcentages s&rsquo;appliquent à tous les codes de cette boutique.
         </p>
+        <p className="mt-1 rounded-lg bg-blue-50 px-3 py-2 text-[12.5px] font-semibold text-[#1d4ed8]">
+          Termes : les commissions sont reversées après 15 paiements validés effectués avec le code promo.
+        </p>
       </div>
 
       {/* Notifications : ventes avec codes */}

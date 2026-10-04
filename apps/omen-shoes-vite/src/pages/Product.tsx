@@ -44,6 +44,7 @@ export default function Product() {
     brand: apiProduct.brand || apiProduct.category || "",
     price: apiProduct.price,
     description: apiProduct.description || "",
+    preorder: !!apiProduct.preorder,
     colors: apiProduct.colors?.map((c: any) => ({ name: c.name, hex: c.hex })) || fallback.colors,
     images: [
       ...((apiProduct.images || []).map((img: any) => resolveImage(img.url))),
@@ -54,7 +55,7 @@ export default function Product() {
           ...((apiProduct.colors || []).flatMap((c: any) => (c.images || []).map((img: any) => resolveImage(img.url)))),
         ].filter(Boolean)
       : fallback.images,
-  } : (loading ? { ...fallback, images: [] } : fallback);
+  } : (loading ? { ...fallback, images: [], preorder: false } : { ...fallback, preorder: false });
 
   const isFav = favItems.some((i) => i.productId === product.id);
 
@@ -66,7 +67,7 @@ export default function Product() {
 
   const handleAdd = () => {
     if (!selectedSize) { setShowSizes(true); return; }
-    addItem({ productId: product.id, slug: slug || "", name: product.name, brand: product.brand, price: product.price, image: product.images[0] || "", size: selectedSize });
+    addItem({ productId: product.id, slug: slug || "", name: product.name, brand: product.brand, price: product.price, image: product.images[0] || "", size: selectedSize, preorder: !!product.preorder });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -100,6 +101,9 @@ export default function Product() {
                 <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex flex-col gap-2">
                   <span className="w-fit rounded-full bg-white/80 backdrop-blur-md px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-[#1d4ed8]" style={{ border: "1px solid #e0d6d0" }}>Nouveau</span>
                   <span className="w-fit rounded-full bg-white/80 backdrop-blur-md px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-[#111]" style={{ border: "1px solid #e0d6d0" }}>Édition Limitée</span>
+                  {product.preorder && (
+                    <span className="w-fit rounded-full bg-[#ea580c] px-3 py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-white">Sur commande</span>
+                  )}
                 </div>
                 
                 <button onClick={toggleFav} className="absolute right-4 top-4 sm:right-6 sm:top-6 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-white" style={{ border: "1px solid #e0d6d0", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
@@ -122,6 +126,11 @@ export default function Product() {
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1d4ed8] sm:text-[11px]">{product.brand}</p>
               <h1 className="mt-1 text-3xl text-[#111] sm:text-5xl lg:text-6xl" style={{ fontFamily: '"Playfair Display", serif', fontStyle: "italic", fontWeight: 800, lineHeight: 1.1 }}>{product.name}</h1>
               <p className="mt-4 text-[14px] leading-relaxed text-[#666] sm:text-[16px] max-w-2xl">{product.description} Conçue avec une attention méticuleuse aux détails, cette paire incarne l'alliance parfaite entre héritage culturel et innovation moderne.</p>
+              {product.preorder && (
+                <div className="mt-4 max-w-2xl rounded-xl border border-orange-300 bg-orange-50 px-4 py-3 text-[13px] leading-relaxed text-orange-800 sm:text-[13.5px]">
+                  <span className="font-bold">Article sur commande —</span> 50% à la commande, le solde est réglé à la livraison.
+                </div>
+              )}
             </Reveal>
             <Reveal delay={200}>
               <div className="mt-5">
@@ -190,7 +199,7 @@ export default function Product() {
       </main>
       <Footer />
       <MobileNav />
-      <StickyCart productId={product.id} slug={slug || ""} name={product.name} brand={product.brand} price={product.price} image={product.images[0] || ""} selectedSize={selectedSize} onSelectSize={() => setShowSizes(true)} />
+      <StickyCart productId={product.id} slug={slug || ""} name={product.name} brand={product.brand} price={product.price} image={product.images[0] || ""} selectedSize={selectedSize} onSelectSize={() => setShowSizes(true)} preorder={!!product.preorder} />
     </div>
   );
 }

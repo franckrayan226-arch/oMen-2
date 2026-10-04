@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const PERKS = [
   "Code promo personnel",
   "Réduction pour tes abonnés",
-  "Commission sur chaque vente",
+  "Commission après 15 ventes validées",
 ];
 
 export function InfluencerCta() {
@@ -24,8 +24,8 @@ export function InfluencerCta() {
               Gagne de l&rsquo;argent avec ta communauté
             </h2>
             <p className="mt-3 max-w-[540px] text-[13px] leading-relaxed text-[#666] sm:text-[14px]">
-              Crée ton code promo : tes abonnés profitent de -10% sur leurs paires,
-              et tu touches une commission sur chaque commande passée avec ton code.
+              Crée ton code promo : tes abonnés profitent de -10% sur leurs paires, tu touches une
+              commission sur chaque commande — reversée après 15 paiements validés avec ton code.
             </p>
             <ul className="mt-5 flex flex-wrap gap-2">
               {PERKS.map((p) => (

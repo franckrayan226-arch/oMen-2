@@ -30,15 +30,18 @@ router.post('/create', async (req: Request, res: Response) => {
     }
 
     let subtotal = 0;
+    let preorderSum = 0;
     const orderItems = items.map((item: { productId: string; quantity: number }) => {
       const product = products.find((p) => p.id === item.productId)!;
       const lineTotal = product.price * item.quantity;
       subtotal += lineTotal;
+      if (product.preorder) preorderSum += lineTotal;
       return {
         productId: product.id,
         name: product.name,
         price: product.price,
         quantity: item.quantity,
+        preorder: product.preorder,
       };
     });
 
@@ -59,6 +62,15 @@ router.post('/create', async (req: Request, res: Response) => {
     }
 
     const total = subtotal - discount + shipping;
+
+    // Articles sur commande (oMen Shoes) : 50% à la commande, solde à la livraison
+    let dueAtDelivery = 0;
+    let dueNow = total;
+    if (preorderSum > 0 && subtotal > 0) {
+      const preorderShare = preorderSum - Math.round((discount * preorderSum) / subtotal);
+      dueAtDelivery = Math.floor(preorderShare / 2);
+      dueNow = total - dueAtDelivery;
+    }
 
     // Adresse de livraison : accepte objet OU chaîne JSON, et y ajoute les infos client
     let addr: any = {};
@@ -91,6 +103,7 @@ router.post('/create', async (req: Request, res: Response) => {
         ...(partner ? { partner: { connect: { id: partner.id } } } : {}),
         discount,
         commission,
+        dueAtDelivery,
         items: {
           create: orderItems,
         },
@@ -121,6 +134,9 @@ router.post('/create', async (req: Request, res: Response) => {
       orderId: order.id,
       reference,
       discount,
+      total,
+      dueNow,
+      dueAtDelivery,
       redirectUrl: null,
     });
   } catch (error: any) {

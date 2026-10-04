@@ -21,6 +21,7 @@ export interface ProductItem {
   colorsCount: number;
   category: string;
   active: boolean;
+  preorder?: boolean;
 }
 
 export function useProducts() {
@@ -43,6 +44,7 @@ export function useProducts() {
           colorsCount: p.colors?.length || 0,
           category: p.category || "",
           active: p.active,
+          preorder: !!p.preorder,
         }));
         setProducts(items);
       })

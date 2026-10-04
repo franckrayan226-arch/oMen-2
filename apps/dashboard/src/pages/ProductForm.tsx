@@ -64,6 +64,7 @@ export default function ProductForm() {
   const [tags, setTags] = useState("");
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
+  const [preorder, setPreorder] = useState(false);
 
   const [colors, setColors] = useState<ColorDef[]>([]);
   const [globalImages, setGlobalImages] = useState<ImageDef[]>([]);
@@ -120,6 +121,7 @@ export default function ProductForm() {
         setTags(Array.isArray(p.tags) ? p.tags.join(", ") : p.tags || "");
         setActive(p.active ?? true);
         setFeatured(p.featured ?? false);
+        setPreorder(!!p.preorder);
         if ((p.colors || []).length > 0 || (p.images || []).length > 0) setShowAdvanced(true);
 
         const loadedColors: ColorDef[] = (p.colors || []).map((c: any) => ({
@@ -280,8 +282,16 @@ export default function ProductForm() {
   // ── ENREGISTREMENT ──
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    setSaving(true);
     setError("");
+    if (!name.trim()) {
+      setError("Le nom du produit est requis");
+      return;
+    }
+    if (!Number.isFinite(price) || price <= 0) {
+      setError("Le prix doit être supérieur à 0");
+      return;
+    }
+    setSaving(true);
 
     try {
       const body: ProductFormData = {
@@ -296,6 +306,7 @@ export default function ProductForm() {
         tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
         active,
         featured,
+        preorder: storeId === "omen-shoes" && preorder,
         colors: colors.map((c, ci) => ({
           name: c.name,
           hex: c.hex,
@@ -378,6 +389,7 @@ export default function ProductForm() {
                   setCategory(
                     s.id === "omen-shoes" ? "Sneakers" : s.id === "omen-tech" ? "Smartphones" : "Compléments"
                   );
+                  if (s.id !== "omen-shoes") setPreorder(false);
                 }}
                 className={`flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-2xl border-2 px-2 text-center transition ${
                   storeId === s.id
@@ -467,6 +479,40 @@ export default function ProductForm() {
                 placeholder="Décrivez le produit simplement…"
               />
             </Field>
+
+            {storeId === "omen-shoes" && (
+              <Field label="Type de vente (oMen Shoes)">
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPreorder(false)}
+                    className={`min-h-[60px] rounded-2xl border-2 px-3 py-2 text-center transition ${
+                      !preorder
+                        ? "border-[#1d4ed8] bg-blue-50 text-[#1d4ed8]"
+                        : "border-black/10 bg-white text-[#444] hover:border-black/25"
+                    }`}
+                  >
+                    <span className="block text-[13.5px] font-bold">En stock</span>
+                    <span className="mt-0.5 block text-[11.5px] opacity-75">Payé entièrement maintenant</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreorder(true)}
+                    className={`min-h-[60px] rounded-2xl border-2 px-3 py-2 text-center transition ${
+                      preorder
+                        ? "border-[#1d4ed8] bg-blue-50 text-[#1d4ed8]"
+                        : "border-black/10 bg-white text-[#444] hover:border-black/25"
+                    }`}
+                  >
+                    <span className="block text-[13.5px] font-bold">Sur commande</span>
+                    <span className="mt-0.5 block text-[11.5px] opacity-75">50% à la commande, solde à la livraison</span>
+                  </button>
+                </div>
+                <p className="mt-1.5 text-[12px] text-[#999]">
+                  Option exclusive à oMen Shoes — le solde est encaissé à la livraison.
+                </p>
+              </Field>
+            )}
           </div>
         </Section>
 

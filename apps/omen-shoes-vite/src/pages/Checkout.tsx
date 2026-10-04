@@ -55,6 +55,13 @@ export default function Checkout() {
 
   const finalTotal = Math.max(0, total - discount);
 
+  // Articles sur commande : 50% à la commande, solde à la livraison
+  const preorderSum = items.reduce((sum, i) => (i.preorder ? sum + i.price * i.quantity : sum), 0);
+  const preorderShare = preorderSum > 0 && total > 0 ? preorderSum - Math.round((discount * preorderSum) / total) : 0;
+  const dueAtDelivery = Math.floor(preorderShare / 2);
+  const dueNow = Math.max(0, finalTotal - dueAtDelivery);
+  const hasPreorder = dueAtDelivery > 0;
+
   const applyCode = async () => {
     const c = codeInput.trim().toUpperCase();
     if (!c) return;
@@ -96,8 +103,8 @@ export default function Checkout() {
     setCodeError(null);
   };
 
-  const omUssd = `*144*2*1*${PAY_NUMBER}*${finalTotal}#`;
-  const moovUssd = `*555*2*1*${MOOV_NUMBER}*${finalTotal}#`;
+  const omUssd = `*144*2*1*${PAY_NUMBER}*${dueNow}#`;
+  const moovUssd = `*555*2*1*${MOOV_NUMBER}*${dueNow}#`;
 
   const locate = () => {
     if (!navigator.geolocation) {
@@ -242,7 +249,12 @@ export default function Checkout() {
             <div className="space-y-3 rounded-xl bg-white p-4 sm:space-y-4 sm:p-5" style={{ border: "1px solid #e0d6d0" }}>
               <div className="flex items-center justify-between">
                 <h2 className="text-[13px] font-bold text-[#111] sm:text-sm">Mode de paiement</h2>
-                <span className="text-[15px] font-black text-[#111]">{finalTotal.toLocaleString("fr-FR")} FCFA</span>
+                <span className="text-right">
+                  <span className="text-[15px] font-black text-[#111]">{dueNow.toLocaleString("fr-FR")} FCFA</span>
+                  {hasPreorder && (
+                    <span className="block text-[10.5px] font-bold text-orange-600">à payer maintenant</span>
+                  )}
+                </span>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
@@ -278,6 +290,7 @@ export default function Checkout() {
               <p className="text-[11px] leading-[1.6] text-[#999]">
                 Ton téléphone compose le code USSD. Tu valides avec ton PIN, puis tu fais une capture d&rsquo;écran du
                 succès de transaction.
+                {hasPreorder && " Pour les articles sur commande, ce montant couvre les 50% — le solde sera encaissé à la livraison."}
               </p>
             </div>
 
@@ -304,7 +317,15 @@ export default function Checkout() {
 
             <div className="rounded-xl bg-white p-4 sm:p-5" style={{ border: "1px solid #e0d6d0" }}>
               <h2 className="mb-2 text-[13px] font-bold text-[#111] sm:mb-3 sm:text-sm">Récapitulatif</h2>
-              {items.map((i) => <div key={`${i.productId}-${i.size}`} className="flex justify-between text-[12px] text-[#666] py-0.5 sm:text-[13px]"><span className="truncate">{i.name} ({i.size}) × {i.quantity}</span><span className="shrink-0 pl-2 font-medium text-[#111]">{(i.price * i.quantity).toLocaleString("fr-FR")} FCFA</span></div>)}
+              {items.map((i) => (
+                <div key={`${i.productId}-${i.size}`} className="flex justify-between text-[12px] text-[#666] py-0.5 sm:text-[13px]">
+                  <span className="truncate">
+                    {i.name} ({i.size}) × {i.quantity}
+                    {i.preorder && <span className="ml-1 font-semibold text-orange-600">· sur commande</span>}
+                  </span>
+                  <span className="shrink-0 pl-2 font-medium text-[#111]">{(i.price * i.quantity).toLocaleString("fr-FR")} FCFA</span>
+                </div>
+              ))}
 
               {/* Code promo influenceur */}
               {appliedCode ? (
@@ -343,13 +364,21 @@ export default function Checkout() {
                 </div>
               )}
 
-              <div className="mt-2 pt-2 flex items-center justify-between sm:mt-3 sm:pt-3" style={{ borderTop: "1px solid #e0d6d0" }}><span className="text-[13px] font-bold text-[#111] sm:text-sm">Total</span><span className="text-lg font-black text-[#111]">{finalTotal.toLocaleString("fr-FR")} FCFA</span></div>
+              {hasPreorder && (
+                <div className="mt-3 rounded-lg border border-orange-300 bg-orange-50 px-3 py-2.5 text-[12px] leading-relaxed text-orange-800 sm:text-[12.5px]">
+                  <p className="font-bold">Articles sur commande : 50% à la commande</p>
+                  <p className="mt-1">À payer maintenant : <b>{dueNow.toLocaleString("fr-FR")} FCFA</b></p>
+                  <p>À régler à la livraison : <b>{dueAtDelivery.toLocaleString("fr-FR")} FCFA</b></p>
+                </div>
+              )}
+
+              <div className="mt-2 pt-2 flex items-center justify-between sm:mt-3 sm:pt-3" style={{ borderTop: "1px solid #e0d6d0" }}><span className="text-[13px] font-bold text-[#111] sm:text-sm">{hasPreorder ? "Total commande" : "Total"}</span><span className="text-lg font-black text-[#111]">{finalTotal.toLocaleString("fr-FR")} FCFA</span></div>
             </div>
 
             {error && <div className="rounded-lg bg-red-50 p-3 text-[12px] text-red-600 sm:text-[13px]">{error}</div>}
 
             <button type="submit" disabled={loading || !canSubmit} className="w-full rounded-lg bg-[#1d4ed8] py-3.5 text-[14px] font-semibold text-white active:scale-[0.98] disabled:opacity-50 sm:py-4">
-              {loading ? "Redirection..." : `Confirmer — ${finalTotal.toLocaleString("fr-FR")} FCFA`}
+              {loading ? "Redirection..." : `Confirmer — ${dueNow.toLocaleString("fr-FR")} FCFA`}
             </button>
             <p className="text-center text-[10px] text-[#999] sm:text-[11px]">Orange Money / Moov Money — capture requise</p>
           </form>

@@ -168,6 +168,11 @@ export default function Orders() {
                         Réduction -{formatPrice(order.discount!)} · Comm. {formatPrice(order.commission ?? 0)}
                       </p>
                     )}
+                    {(order.dueAtDelivery ?? 0) > 0 && (
+                      <p className="mt-0.5 text-[12px] font-bold text-orange-600">
+                        Solde livraison : {formatPrice(order.dueAtDelivery!)}
+                      </p>
+                    )}
                     <span
                       className={`mt-1 inline-block rounded-full border px-2.5 py-0.5 text-[11.5px] font-bold ${info.chip}`}
                     >
@@ -207,6 +212,11 @@ export default function Orders() {
                     <div key={ii} className="flex items-center justify-between gap-3 py-2.5">
                       <span className="text-[14px] text-[#333]">
                         {item.quantity} × {item.name}
+                        {item.preorder && (
+                          <span className="ml-2 inline-block rounded-full border border-orange-300 bg-orange-50 px-2 py-0.5 align-middle text-[10.5px] font-bold text-orange-700">
+                            sur commande
+                          </span>
+                        )}
                       </span>
                       <span className="shrink-0 text-[14px] font-semibold">
                         {formatPrice(item.price * item.quantity)}

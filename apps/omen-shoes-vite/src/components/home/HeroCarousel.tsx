@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const SLIDES = [
   {
     title: "Marche\nau-dessus.",
-    subtitle: "SNEAKERS · LOMÉ",
+    subtitle: "SNEAKERS · OUAGA",
     cta: "Voir les paires",
     to: "/catalogue",
     image: "/shoes/widget-1.jpg",

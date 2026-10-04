@@ -72,6 +72,7 @@ export interface ProductFormData {
   tags: string[];
   active: boolean;
   featured: boolean;
+  preorder: boolean;
   colors: ColorDef[];
   images: ImageDef[];
   variants: VariantDef[];
@@ -82,6 +83,7 @@ export interface OrderItem {
   name: string;
   price: number;
   quantity: number;
+  preorder?: boolean;
 }
 
 export interface Order {
@@ -95,6 +97,7 @@ export interface Order {
   couponCode?: string | null;
   discount?: number;
   commission?: number;
+  dueAtDelivery?: number;
   currency?: string;
   paymentMethod?: string | null;
   shippingAddress?: string | null; // JSON: { name, phone, email, street, city, country }

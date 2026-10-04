@@ -107,23 +107,47 @@ router.post('/', async (req: Request, res: Response) => {
       tags,
       active,
       featured,
+      preorder,
       colors,
       variants,
     } = req.body;
 
+    if (!storeId) {
+      return res.status(400).json({ error: 'Boutique manquante — choisis une boutique' });
+    }
+    if (typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ error: 'Le nom du produit est requis' });
+    }
+    const priceNum = Number(price);
+    if (!Number.isFinite(priceNum) || priceNum <= 0) {
+      return res.status(400).json({ error: 'Le prix doit être supérieur à 0' });
+    }
+
+    const trimmedName = name.trim();
+    let finalSlug = typeof slug === 'string' && slug.trim() ? slug.trim() : '';
+    if (!finalSlug) {
+      finalSlug = trimmedName
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
     const product = await prisma.product.create({
       data: {
         storeId,
-        name,
-        slug,
+        name: trimmedName,
+        slug: finalSlug,
         description,
-        price,
+        price: priceNum,
         compareAt,
         category,
         brand: brand || '',
         tags: Array.isArray(tags) ? tags.join(',') : (tags || ''),
         active: active ?? true,
         featured: featured || false,
+        preorder: storeId === 'omen-shoes' && !!preorder,
         colors: colors?.length ? {
           create: colors.map((c: any, idx: number) => ({
             name: c.name,
@@ -178,7 +202,16 @@ router.post('/', async (req: Request, res: Response) => {
 
     return res.status(201).json(product);
   } catch (error: any) {
-    return res.status(500).json({ error: 'Failed to create product' });
+    console.error('[products:create]', error);
+    if (error?.code === 'P2002') {
+      return res.status(409).json({
+        error: 'Un produit existe déjà avec ce nom ou ce lien — choisis un autre nom',
+      });
+    }
+    if (error?.code === 'P2003') {
+      return res.status(400).json({ error: 'Boutique ou catégorie inconnue' });
+    }
+    return res.status(500).json({ error: 'Échec de la création du produit' });
   }
 });
 
@@ -186,6 +219,7 @@ router.post('/', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
   try {
     const {
+      storeId,
       name,
       slug,
       description,
@@ -196,6 +230,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       tags,
       active,
       featured,
+      preorder,
       colors,
       images,
       variants,
@@ -215,6 +250,7 @@ router.put('/:id', async (req: Request, res: Response) => {
         tags: Array.isArray(tags) ? tags.join(',') : (tags || ''),
         active,
         featured,
+        ...(typeof preorder === 'boolean' && storeId === 'omen-shoes' ? { preorder } : {}),
       },
     });
 
@@ -392,7 +428,11 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     return res.json(product);
   } catch (error: any) {
-    return res.status(500).json({ error: 'Failed to update product' });
+    console.error('[products:update]', error);
+    if (error?.code === 'P2002') {
+      return res.status(409).json({ error: 'Un produit existe déjà avec ce nom ou ce lien — choisis un autre nom' });
+    }
+    return res.status(500).json({ error: 'Échec de la mise à jour du produit' });
   }
 });
 

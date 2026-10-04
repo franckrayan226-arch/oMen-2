@@ -71,6 +71,7 @@ model Product {
   tags        String   @default("") // Stocké comme "tag1,tag2,tag3"
   active      Boolean  @default(true)
   featured    Boolean  @default(false)
+  preorder    Boolean  @default(false) // true = sur commande (50% à la commande, solde à la livraison) — oMen Shoes uniquement
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -179,6 +180,7 @@ model Order {
   partner         Partner?  @relation(fields: [partnerId], references: [id])
   discount        Int      @default(0) // Réduction accordée via le code (FCFA)
   commission      Int      @default(0) // Commission due à l'influenceur (FCFA)
+  dueAtDelivery   Int      @default(0) // Solde à encaisser à la livraison (articles sur commande)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -200,6 +202,7 @@ model OrderItem {
   name      String  // Snapshot du nom
   price     Int     // Snapshot du prix
   quantity  Int
+  preorder  Boolean @default(false) // Snapshot : article sur commande
 }
 
 // ============================================================

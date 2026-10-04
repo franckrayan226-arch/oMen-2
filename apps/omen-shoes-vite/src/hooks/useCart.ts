@@ -10,6 +10,7 @@ export interface CartItem {
   image: string;
   size: string;
   quantity: number;
+  preorder?: boolean;
 }
 
 interface CartStore {

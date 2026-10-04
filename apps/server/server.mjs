@@ -187,7 +187,7 @@ function defaultDb() {
     site: {
       shoes: {
         hero: [
-          { title: "Marche\navec style.", subtitle: "SNEAKERS · LOMÉ & OUAGA", cta: "Voir les paires", to: "/catalogue", image: "/shoes/widget-1.jpg" },
+          { title: "Marche\navec style.", subtitle: "SNEAKERS · OUAGA & BOBO", cta: "Voir les paires", to: "/catalogue", image: "/shoes/widget-1.jpg" },
           { title: "Style\nauthentique.", subtitle: "NIKE · COLLECTION", cta: "Découvrir", to: "/catalogue?marque=Nike", image: "/shoes/widget-2.jpg" },
           { title: "La légende\nurbaine.", subtitle: "JORDAN · RÉTRO", cta: "Voir les paires", to: "/catalogue?marque=Jordan", image: "/shoes/widget-3.jpg" },
           { title: "Élégance\nquotidienne.", subtitle: "ADIDAS · ORIGINALS", cta: "Explorer", to: "/catalogue?marque=adidas", image: "/shoes/widget-4.jpg" },

@@ -15,17 +15,17 @@ export function Navbar() {
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <header className="sticky top-0 z-40 px-2 pt-2 sm:px-4 sm:pt-3">
-      <Link
-        to="/partenaires"
-        className="mx-auto mb-2 flex w-fit max-w-full items-center justify-center gap-2 rounded-full bg-[#111] px-4 py-1.5 text-center text-[10.5px] font-bold uppercase tracking-[0.1em] text-white transition-colors duration-300 hover:bg-[#1d4ed8] sm:text-[11px]"
-      >
-        Devenir influenceur
-        <span className="hidden font-medium normal-case tracking-normal text-white/75 sm:inline">
-          · partage ton code, touche ta commission
-        </span>
-        <span aria-hidden="true">→</span>
-      </Link>
+    <>
+      <div className="px-2 pt-2 sm:px-4 sm:pt-3">
+        <Link
+          to="/partenaires"
+          className="mx-auto mb-2 flex w-fit max-w-full items-center justify-center gap-1.5 rounded-full bg-[#111] px-3.5 py-1 text-center text-[9.5px] font-bold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#1d4ed8] sm:text-[10px]"
+        >
+          Devenir influenceur
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+      <header className="sticky top-0 z-40 px-2 pt-2 sm:px-4 sm:pt-3">
       <nav className="glass mx-auto flex h-14 max-w-7xl items-center justify-between rounded-full px-3 sm:h-16 sm:px-5">
         <Link to="/" className="flex items-center gap-2 sm:gap-3 shrink-0">
           <img src="/omen.shop.jpeg" alt="Omen Sneaker" className="h-12 w-12 rounded-full object-cover ring-2 ring-[#1d4ed8]/30 sm:h-14 sm:w-14" />
@@ -61,6 +61,7 @@ export function Navbar() {
           </Link>
         </div>
       </nav>
-    </header>
+      </header>
+    </>
   );
 }

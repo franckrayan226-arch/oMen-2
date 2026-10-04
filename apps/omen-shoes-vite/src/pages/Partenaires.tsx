@@ -98,6 +98,17 @@ export default function Partenaires() {
             ))}
           </div>
 
+          {/* Termes du programme */}
+          <div className="mt-4 rounded-xl bg-white p-4" style={{ border: "1px solid #e0d6d0" }}>
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#1d4ed8]">Termes du programme</p>
+            <ul className="mt-2.5 space-y-1.5 text-[12.5px] leading-relaxed text-[#666]">
+              <li>· Réduction immédiate {cfg ? `-${cfg.discountPct} %` : "négociée"} pour votre communauté à chaque commande passée avec votre code.</li>
+              <li>· Commission de {cfg ? `${cfg.commissionPct} %` : ""} créditée à chaque vente validée avec votre code.</li>
+              <li className="font-semibold text-[#111]">· Reversement des commissions après 15 paiements validés effectués avec votre code promo.</li>
+              <li>· Code gratuit, unique et activé immédiatement — un seul code par influenceur.</li>
+            </ul>
+          </div>
+
           {partner ? (
             /* ── Code généré ── */
             <div className="mt-7 rounded-xl bg-white p-6 text-center sm:p-9" style={{ border: "1px solid #e0d6d0" }}>

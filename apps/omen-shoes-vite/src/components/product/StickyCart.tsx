@@ -9,14 +9,15 @@ interface StickyCartProps {
   image: string;
   selectedSize: string | null;
   onSelectSize: () => void;
+  preorder?: boolean;
 }
 
-export function StickyCart({ productId, slug, name, brand, price, image, selectedSize, onSelectSize }: StickyCartProps) {
+export function StickyCart({ productId, slug, name, brand, price, image, selectedSize, onSelectSize, preorder }: StickyCartProps) {
   const addItem = useCart((s) => s.addItem);
 
   const handleAdd = () => {
     if (!selectedSize) { onSelectSize(); return; }
-    addItem({ productId, slug, name, brand, price, image, size: selectedSize });
+    addItem({ productId, slug, name, brand, price, image, size: selectedSize, preorder });
   };
 
   return (
@@ -28,7 +29,7 @@ export function StickyCart({ productId, slug, name, brand, price, image, selecte
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] text-[#666] truncate">{brand}{selectedSize ? ` · T${selectedSize}` : ""}</p>
+          <p className="text-[10px] text-[#666] truncate">{brand}{selectedSize ? ` · T${selectedSize}` : ""}{preorder ? " · sur commande : 50% + solde à la livraison" : ""}</p>
           <p className="text-[16px] font-black text-[#111]">{price.toLocaleString("fr-FR")} <span className="text-[11px] font-medium text-[#666]">FCFA</span></p>
         </div>
         <button

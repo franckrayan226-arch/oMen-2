@@ -12,6 +12,7 @@ interface ProductCardProps {
   colors?: number;
   badge?: "Nouveau" | "Promo" | "Top";
   image?: string;
+  preorder?: boolean;
 }
 
 const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
@@ -32,7 +33,7 @@ function Corner({ pos, border }: { pos: string; border: React.CSSProperties }) {
   );
 }
 
-export function ProductCard({ id, slug, name, brand, price, compareAt, colors, badge, image }: ProductCardProps) {
+export function ProductCard({ id, slug, name, brand, price, compareAt, colors, badge, image, preorder }: ProductCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const favorites = useFavorites((s) => s.items);
   const addFavorite = useFavorites((s) => s.addItem);
@@ -158,7 +159,9 @@ export function ProductCard({ id, slug, name, brand, price, compareAt, colors, b
 
         {/* editorial hairline, then the service row */}
         <div className="mt-2 flex items-center justify-between border-t border-[#111]/[0.07] pt-2.5">
-          {compareAt ? (
+          {preorder ? (
+            <span className="text-[9.5px] font-bold tracking-wide text-[#ea580c]">Sur commande · 50% + solde livraison</span>
+          ) : compareAt ? (
             <span className="text-[10px] font-medium text-[#111]/40 line-through">{compareAt.toLocaleString("fr-FR")} F</span>
           ) : (
             <span className="text-[9.5px] font-medium tracking-wide text-[#111]/40">Livraison 24h · Ouaga &amp; Bobo</span>
